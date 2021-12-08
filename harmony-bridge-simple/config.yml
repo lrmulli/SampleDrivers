@@ -1,0 +1,5 @@
+name: 'Hello Websockets'
+packageKey: 'com.smartthings.hellowebsockets'
+permissions:
+  lan: {}
+  discovery: {}

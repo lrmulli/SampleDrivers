@@ -1,6 +1,7 @@
 -- require st provided libraries
 local capabilities = require "st.capabilities"
 local Driver = require "st.driver"
+local utils = require "st.utils"
 local log = require "log"
 local bit = require 'bitop.funcs'
 local socket = require'socket'
@@ -49,28 +50,37 @@ local hello_world_driver = Driver("helloworld", {
   }
 })
 
-
+--Harmony Websockets
 local params = {
   mode = "client",
   protocol = "any",
   verify = "none",
   options = "all"
 }
-
+local hubId="13372140"
+local hub_url = "ws://192.168.1.40:8088/?domain=svcs.myharmony.com&hubId="..hubId
 function ws_connect()
   log.debug("WS_CONNECT - Connecting")
-  local r, code, _, sock = ws:connect('ws://192.168.1.40:8088/?domain=svcs.myharmony.com&hubId=13372140',"", params)
-  print('WS_CONNECT', r, code)
+  local r, code, _, sock = ws:connect(hub_url,"echo", params)
+  print('WS_CONNECT - STATUS', r, code)
 
+  
   if r then
-    hello_world_driver:register_channel_handler(sock, function ()
+    log.debug("Registering Channel Handler")
+    log.debug()
+    hello_world_driver:register_channel_handler(ws.sock, function ()
       my_ws_tick()
-    end)
+    end,"SocketChannelHandler")
+    log.debug("Registering Channel Handler Code finished")
   end
+  getConfig()
 end
-
 function my_ws_tick()
+  print("In Tick Function")
   local payload, opcode, c, d, err = ws:receive()
+  print("Payload: ",payload)
+  print("Opcode: ",opcode)
+  print("Error: ",err)
   if opcode == 9.0 then  -- PING 
     print('SEND PONG:', ws:send(payload, 10)) -- Send PONG
   end
@@ -78,6 +88,13 @@ function my_ws_tick()
     ws_connect()   -- Reconnect on error
   end
 end
+
+function getConfig()
+  local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
+  print(ws:send(payload))
+end
+
+--End Harmony Websockets
 
 hello_world_driver:call_with_delay(1, function ()
   ws_connect()
