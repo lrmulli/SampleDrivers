@@ -1,5 +1,0 @@
-name: 'LAN LightBulb'
-packageKey: 'LAN-LightBulb'
-permissions:
-  lan: {}
-  discovery: {}

@@ -1,5 +1,0 @@
-name: 'Hello World'
-packageKey: 'com.smartthings.helloworld'
-permissions:
-  lan: {}
-  discovery: {}

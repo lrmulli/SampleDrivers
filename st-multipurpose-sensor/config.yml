@@ -1,4 +1,0 @@
-name: 'SmartThings Multipurpose Sensor'
-packageKey: 'smartthingsMultipurposeSensor'
-permissions:
-  zigbee: {}
