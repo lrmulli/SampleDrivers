@@ -6,6 +6,10 @@ local log = require "log"
 local bit = require 'bitop.funcs'
 local socket = require'socket'
 local ws = require('websocket.client').sync({ timeout = 30 })
+local json = require "dkjson"
+
+-- Custom capabilities
+local harmonycommand = capabilities["universevoice35900.harmonyCommand"]
 
 -- require custom handlers from driver package
 local command_handlers = require "command_handlers"
@@ -20,6 +24,7 @@ local function device_added(driver, device)
 
   -- set a default or queried state for each capability attribute
   device:emit_event(capabilities.switch.switch.on())
+  device:emit_event(harmonycommand.harmonyCommand("starting"))
 end
 
 -- this is called both when a device is added (but after `added`) and after a hub reboots.
@@ -35,7 +40,7 @@ local function device_removed(driver, device)
 end
 
 -- create the driver object
-local hello_world_driver = Driver("helloworld", {
+local hello_world_driver = Driver("harmony-bridge-simple.v1", {
   discovery = discovery.handle_discovery,
   lifecycle_handlers = {
     added = device_added,
@@ -46,6 +51,9 @@ local hello_world_driver = Driver("helloworld", {
     [capabilities.switch.ID] = {
       [capabilities.switch.commands.on.NAME] = command_handlers.switch_on,
       [capabilities.switch.commands.off.NAME] = command_handlers.switch_off,
+    },
+    [capabilities["universevoice35900.harmonyCommand"].ID] = {
+    [capabilities["universevoice35900.harmonyCommand"].commands.setHarmonyCommand.ID] = command_handlers.harmonycommand,
     },
   }
 })
@@ -78,7 +86,7 @@ end
 function my_ws_tick()
   print("In Tick Function")
   local payload, opcode, c, d, err = ws:receive()
-  print("Payload: ",payload)
+  --print("Payload: ",payload)
   print("Opcode: ",opcode)
   print("Error: ",err)
   if opcode == 9.0 then  -- PING 
@@ -87,10 +95,43 @@ function my_ws_tick()
   if err then
     ws_connect()   -- Reconnect on error
   end
+  local response = json.decode(payload)
+--  print("Response: ",utils.stringify_table(response))
+  if response.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?config" then
+    receiveConfig(response)
+  end
 end
 
 function getConfig()
   local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
+  print(ws:send(payload))
+end
+function receiveConfig(config)
+  print("Config Received")
+  for k, device in pairs(config.data.device) do
+    print(k, device.label, device.id)
+    --print(utils.stringify_table(device.controlGroup))
+  end
+  --youview skip 56828046
+
+end
+function sendHarmonyCommand(deviceId,command,action)
+  local time= os.time(os.date("!*t"))*1000
+  local payload = [[{
+    "hubId": "]]..hubId..[[",
+    "timeout": 30,
+    "hbus": {
+      "cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?holdAction",
+      "id": "0",
+      "params": {
+        "status": "]]..action..[[",
+        "timestamp": "]]..time..[[",
+        "verb": "render",
+        "action": "{\"command\":\"]]..command..[[\",\"type\":\"IRCommand\",\"deviceId\":\"]]..deviceId..[[\"}"
+      }
+    }
+  }]]
+  print(payload)
   print(ws:send(payload))
 end
 

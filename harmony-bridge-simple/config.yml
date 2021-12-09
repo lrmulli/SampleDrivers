@@ -1,5 +1,5 @@
-name: 'Hello Websockets'
-packageKey: 'com.smartthings.hellowebsockets'
+name: 'Harmony Bridge Simple'
+packageKey: 'org.mullineux.harmonybridgesimple'
 permissions:
   lan: {}
   discovery: {}

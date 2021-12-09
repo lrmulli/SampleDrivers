@@ -5,5 +5,7 @@ components:
   capabilities:
   - id: switch
     version: 1
+  - id: universevoice35900.harmonyCommand
+    version: 1
   categories:
   - name: Light

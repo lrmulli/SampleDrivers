@@ -1,0 +1,42 @@
+{
+    "dashboard": {
+      "states": [
+
+      ],
+      "actions": [
+      ],
+      "basicPlus": []
+    },
+    "detailView": [
+        {
+            "label": "Harmony Command",
+            "displayType": "textField",
+            "textField": {
+                "value": "harmonyCommand.value",
+                "command": "setHarmonyCommand"
+            }
+        }
+    ],
+    "automation": {
+      "conditions": [
+        {
+            "label": "Harmony Command",
+            "displayType": "textField",
+            "textField": {
+                "value": "harmonyCommand.value"
+            }
+        }
+      ],
+      "actions": [
+        {
+            "label": "Harmony Command",
+            "displayType": "textField",
+            "textField": {
+                "command": "setHarmonyCommand"
+            }
+        }
+      ]
+    },
+    "id": "universevoice35900.harmonyCommand",
+    "version": 1
+  }

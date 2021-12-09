@@ -1,2 +1,2 @@
-local harmony = require'harmony-api'
-harmony.test()
+
+print(os.time(os.date("!*t"))*1000)
