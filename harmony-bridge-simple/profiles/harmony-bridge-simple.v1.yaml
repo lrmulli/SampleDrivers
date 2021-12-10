@@ -3,9 +3,21 @@ name: harmony-bridge-simple.v1
 components:
 - id: main
   capabilities:
-  - id: switch
-    version: 1
   - id: universevoice35900.harmonyCommand
     version: 1
   categories:
-  - name: Light
+  - name: Switch
+preferences:
+  - title: "IP Address"
+    name: ipAddress
+    description: "IP address of the HarmonyHub"
+    required: true
+    preferenceType: string
+    definition:
+      minLength: 7
+      maxLength: 15
+      stringType: text
+      default: ""
+metadata:
+  mnmn: SmartThingsCommunity
+  vid: "2e9ad144-9f9e-356e-8dc9-b97ec18bedb7"

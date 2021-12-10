@@ -1,7 +1,9 @@
 {
     "dashboard": {
       "states": [
-
+        {
+          "label": "Harmony Command"
+        }
       ],
       "actions": [
       ],
