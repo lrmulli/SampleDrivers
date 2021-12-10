@@ -7,6 +7,8 @@ local bit = require 'bitop.funcs'
 local socket = require'socket'
 local ws = require('websocket.client').sync({ timeout = 30 })
 local json = require "dkjson"
+local http = require('socket.http')
+ltn12 = require("ltn12")
 
 -- Custom capabilities
 
@@ -106,6 +108,8 @@ local params = {
 local hubId="13372140"
 local hub_url = "ws://192.168.1.40:8088/?domain=svcs.myharmony.com&hubId="..hubId
 function ws_connect()
+  log.debug("Getting Hub ID")
+  getHarmonyHubId("192.168.1.40")
   log.debug("WS_CONNECT - Connecting")
   local r, code, _, sock = ws:connect(hub_url,"echo", params)
   print('WS_CONNECT - STATUS', r, code)
@@ -153,8 +157,7 @@ function receiveConfig(config)
   --youview skip 56828046
 
 end
-function sendHarmonyCommand(deviceId,command,action)
-  local time= os.time(os.date("!*t"))*1000
+function sendHarmonyCommand(deviceId,command,action,time)
   local payload = [[{
     "hubId": "]]..hubId..[[",
     "timeout": 30,
@@ -174,6 +177,28 @@ function sendHarmonyCommand(deviceId,command,action)
 end
 
 --End Harmony Websockets
+--Harmony HTTP
+function getHarmonyHubId(ipAddress)
+  local reqbody = '{"id":29549457,"cmd":"setup.account?getProvisionInfo","timeout":90000}'
+  local respbody = {} -- for the response body
+  local result, respcode, respheaders, respstatus = http.request {
+    method = "POST",
+    url = "http://"..ipAddress..":8088",
+    source = ltn12.source.string(reqbody),
+    headers = {
+        ["Content-Type"] = "application/json",
+        ["Accept"] = "utf-8",
+        ["origin"] = "http://sl.dhg.myharmony.com"
+    },
+    sink = ltn12.sink.table(respbody)
+    }
+  -- get body as string by concatenating table filled by sink
+  respbody = table.concat(respbody)
+  print(result,respcode,respstatus)
+  print(utils.stringify_table(respbody))
+end
+--End Harmony HTTP
+
 
 hello_world_driver:call_with_delay(1, function ()
   ws_connect()

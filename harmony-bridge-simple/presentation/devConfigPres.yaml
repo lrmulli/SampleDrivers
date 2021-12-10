@@ -45,3 +45,5 @@ automation:
       values: []
       patch: []
       exclusion: []
+metadata:
+  deviceTypeId: Others

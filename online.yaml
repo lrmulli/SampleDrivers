@@ -1,0 +1,35 @@
+id: 636c1da8-611a-4cae-8e9b-db7d2c7c6939
+name: HarmonyCommandOnline
+components:
+  - label: main
+    id: main
+    capabilities:
+      - id: universevoice35900.harmonyCommand
+        version: 1
+    categories: []
+metadata:
+  deviceType: Others
+  vid: ST_45ac41e3-d1a0-462f-a6ee-f02d08014b4f
+  mnmn: fOf9
+  ocfDeviceType: oic.wk.d
+  deviceTypeId: Others
+  ocfSpecVer: core 1.1.0
+  mnid: fOf9
+  mnId: fOf9
+status: DEVELOPMENT
+preferences:
+  - preferenceId: ipAddress
+    name: ipAddress
+    title: IP Address
+    description: IP address of the HarmonyHub
+    required: true
+    preferenceType: string
+    definition:
+      minLength: 7
+      maxLength: 15
+      stringType: text
+      default: 
+owner:
+  ownerType: USER
+  ownerId: cc116c59-2a04-3da3-d3a0-3d5e41ec5603
+migrationStatus: NOT_MIGRATED

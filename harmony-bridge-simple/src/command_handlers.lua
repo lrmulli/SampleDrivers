@@ -10,7 +10,11 @@ function command_handlers.harmonycommand(driver, device, command)
   log.debug("Execute Command---"..command.args.value)
   local req = json.decode(command.args.value)
   log.debug(utils.stringify_table(req))
-  sendHarmonyCommand(req.deviceId,req.command,req.action)
+  if req.action == "press" then
+    sendHarmonyCommand(req.deviceId,req.command,req.action,0)
+    sendHarmonyCommand(req.deviceId,req.command,"release",100)
+  end
+  
 end
 
 return command_handlers
