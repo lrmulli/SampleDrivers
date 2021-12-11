@@ -18,6 +18,6 @@ preferences:
       maxLength: 15
       stringType: text
       default: ""
-metadata:
-  mnmn: SmartThingsCommunity
-  vid: 2e9ad144-9f9e-356e-8dc9-b97ec18bedb7
+
+
+
