@@ -3,7 +3,7 @@ name: harmony-bridge-simple.v1
 components:
 - id: main
   capabilities:
-  - id: universevoice35900.harmonyCommand
+  - id: universevoice35900.harmonyCommand2
     version: 1
   categories:
   - name: Switch

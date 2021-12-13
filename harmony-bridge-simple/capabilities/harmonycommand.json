@@ -1,8 +1,6 @@
 {
-  "id": "universevoice35900.harmonyCommand",
-  "version": 1,
   "status": "proposed",
-  "name": "Harmony Command",
+  "name": "Harmony Command 2",
   "ephemeral": false,
   "attributes": {
       "harmonyCommand": {

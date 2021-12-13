@@ -12,50 +12,7 @@ ltn12 = require("ltn12")
 
 -- Custom capabilities
 
-
-local harmonycommandcapstring = [[{
-  "id": "universevoice35900.harmonyCommand",
-  "version": 1,
-  "status": "proposed",
-  "name": "Harmony Command",
-  "ephemeral": false,
-  "attributes": {
-      "harmonyCommand": {
-          "schema": {
-              "type": "object",
-              "properties": {
-                  "value": {
-                      "type": "string"
-                  }
-              },
-              "additionalProperties": false,
-              "required": [
-                  "value"
-              ]
-          },
-          "setter": "setHarmonyCommand",
-          "enumCommands": []
-      }
-  },
-  "commands": {
-      "setHarmonyCommand": {
-          "name": "setHarmonyCommand",
-          "arguments": [
-              {
-                  "name": "value",
-                  "optional": false,
-                  "schema": {
-                      "type": "string"
-                  }
-              }
-          ]
-      }
-  }
-}
-]]
-local hc_cap = capabilities.build_cap_from_json_string(harmonycommandcapstring)
-capabilities["universevoice35900.harmonyCommand"] = hc_cap
-local harmonycommand = capabilities["universevoice35900.harmonyCommand"]
+local harmonycommand = capabilities["universevoice35900.harmonyCommand2"]
 -- require custom handlers from driver package
 local command_handlers = require "command_handlers"
 local discovery = require "discovery"

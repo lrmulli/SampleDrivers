@@ -2,7 +2,7 @@
     "dashboard": {
       "states": [
         {
-          "label": "Harmony Command"
+          "label": "{{harmonyCommand.value}}"
         }
       ],
       "actions": [
@@ -39,6 +39,6 @@
         }
       ]
     },
-    "id": "universevoice35900.harmonyCommand",
+    "id": "universevoice35900.harmonyCommand2",
     "version": 1
   }
