@@ -9,10 +9,17 @@ local ws = require('websocket.client').sync({ timeout = 30 })
 local json = require "dkjson"
 local http = require('socket.http')
 ltn12 = require("ltn12")
+local ipAddress = ""
+local hubId = ""
+
 
 -- Custom capabilities
+local capdefs = require "capdefs"
+local harmonycommand = capabilities.build_cap_from_json_string(capdefs.harmonyCommandJson)
+capabilities["universevoice35900.harmonycommand3"] = harmonycommand
 
-local harmonycommand = capabilities["universevoice35900.harmonyCommand2"]
+local devicelist = capabilities.build_cap_from_json_string(capdefs.devicelistJson)
+capabilities["universevoice35900.devicelist"] = devicelist
 -- require custom handlers from driver package
 local command_handlers = require "command_handlers"
 local discovery = require "discovery"
@@ -26,6 +33,8 @@ local function device_added(driver, device)
 
   -- set a default or queried state for each capability attribute
   device:emit_event(harmonycommand.harmonyCommand("StartUp"))
+  device:emit_event(devicelist.devicelist("StartUp"))
+  device:emit_event(capabilities['momentary'].push())
 end
 
 -- this is called both when a device is added (but after `added`) and after a hub reboots.
@@ -35,10 +44,24 @@ local function device_init(driver, device)
   device:online()
 end
 
+local function device_info_changed(driver, device, event, args)
+  -- Did my preference value change
+    if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
+      log.info("IP Address Changed",device.preferences.deviceaddr)
+      ipAddress = device.preferences.deviceaddr
+      getHarmonyHubId(device,ipAddress)
+    end
+    
+end
+
+
 -- this is called when a device is removed by the cloud and synchronized down to the hub
 local function device_removed(driver, device)
   log.info("[" .. device.id .. "] Removing Harmony device")
 end
+
+
+
 
 -- create the driver object
 local hello_world_driver = Driver("harmony-bridge-simple.v1", {
@@ -46,12 +69,16 @@ local hello_world_driver = Driver("harmony-bridge-simple.v1", {
   lifecycle_handlers = {
     added = device_added,
     init = device_init,
-    removed = device_removed
+    removed = device_removed,
+    infoChanged = device_info_changed
   },
   capability_handlers = {
-    [capabilities["universevoice35900.harmonyCommand"].ID] = {
-    [capabilities["universevoice35900.harmonyCommand"].commands.setHarmonyCommand.ID] = command_handlers.harmonycommand,
+    [capabilities["universevoice35900.harmonycommand3"].ID] = {
+    [capabilities["universevoice35900.harmonycommand3"].commands.setHarmonyCommand.ID] = command_handlers.harmonycommand,
     },
+    [capabilities.momentary.ID] = {
+      [capabilities.switch.commands.push.NAME] = command_handlers.push,
+    }
   }
 })
 
@@ -62,27 +89,32 @@ local params = {
   verify = "none",
   options = "all"
 }
-local hubId="13372140"
-local hub_url = "ws://192.168.1.40:8088/?domain=svcs.myharmony.com&hubId="..hubId
-function ws_connect()
-  log.debug("Getting Hub ID")
-  getHarmonyHubId("192.168.1.40")
-  log.debug("WS_CONNECT - Connecting")
-  local r, code, _, sock = ws:connect(hub_url,"echo", params)
-  print('WS_CONNECT - STATUS', r, code)
 
+
+function ws_connect(device)
+  if ipAddress ~= "" and hubId ~= ""  then
+    log.info("Configured IP Address is : ",ipAddress)
+    local hub_url = "ws://"..ipAddress..":8088/?domain=svcs.myharmony.com&hubId="..hubId
+    log.debug("Getting Hub ID")
+    log.debug("WS_CONNECT - Connecting")
+    local r, code, _, sock = ws:connect(hub_url,"echo", params)
+    print('WS_CONNECT - STATUS', r, code)
   
-  if r then
-    log.debug("Registering Channel Handler")
-    log.debug()
-    hello_world_driver:register_channel_handler(ws.sock, function ()
-      my_ws_tick()
-    end,"SocketChannelHandler")
-    log.debug("Registering Channel Handler Code finished")
+    
+    if r then
+      log.debug("Registering Channel Handler")
+      log.debug()
+      hello_world_driver:register_channel_handler(ws.sock, function ()
+        my_ws_tick(device)
+      end,"SocketChannelHandler")
+      log.debug("Registering Channel Handler Code finished")
+    end
+    getConfig()
+  else
+    log.info("Check IP Address Configuration")
   end
-  getConfig()
 end
-function my_ws_tick()
+function my_ws_tick(device)
   print("In Tick Function")
   local payload, opcode, c, d, err = ws:receive()
   --print("Payload: ",payload)
@@ -92,12 +124,12 @@ function my_ws_tick()
     print('SEND PONG:', ws:send(payload, 10)) -- Send PONG
   end
   if err then
-    ws_connect()   -- Reconnect on error
+    ws_connect(device)   -- Reconnect on error
   end
   local response = json.decode(payload)
 --  print("Response: ",utils.stringify_table(response))
   if response.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?config" then
-    receiveConfig(response)
+    receiveConfig(device,response)
   end
 end
 
@@ -105,14 +137,21 @@ function getConfig()
   local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
   print(ws:send(payload))
 end
-function receiveConfig(config)
+function receiveConfig(device,config)
   print("Config Received")
-  for k, device in pairs(config.data.device) do
-    print(k, device.label, device.id)
-    --print(utils.stringify_table(device.controlGroup))
+  local deviceListString = ""..string.char(10)..string.char(13)
+  for k, d in pairs(config.data.device) do
+    deviceListString = deviceListString..string.char(10)..string.char(13)..d.id.." - "..d.label..string.char(10)..string.char(13)
+    for i,cg in pairs(d.controlGroup) do
+      for x, action in pairs(cg["function"]) do
+          --print(utils.stringify_table(action))
+          deviceListString = deviceListString..[[{"deviceId":"]]..d.id..[[","command":"]]..action.name..[[","action":"press"}]]..string.char(10)..string.char(13)
+      end
+    end
   end
+  print(deviceListString)
+  device:emit_event(devicelist.devicelist(deviceListString))
   --youview skip 56828046
-
 end
 function sendHarmonyCommand(deviceId,command,action,time)
   local payload = [[{
@@ -135,30 +174,35 @@ end
 
 --End Harmony Websockets
 --Harmony HTTP
-function getHarmonyHubId(ipAddress)
-  local reqbody = '{"id":29549457,"cmd":"setup.account?getProvisionInfo","timeout":90000}'
+function getHarmonyHubId(device,ipAddress)
+  log.info("Attempting to get hubID for ipAddress "..ipAddress)
+  local reqbody = [[{"id":124,"cmd":"setup.account?getProvisionInfo","timeout":90000}]]
   local respbody = {} -- for the response body
+  http.TIMEOUT = 65;
   local result, respcode, respheaders, respstatus = http.request {
     method = "POST",
     url = "http://"..ipAddress..":8088",
     source = ltn12.source.string(reqbody),
     headers = {
-        ["Content-Type"] = "application/json",
-        ["Accept"] = "utf-8",
-        ["origin"] = "http://sl.dhg.myharmony.com"
+        ["content-type"] = "application/json",
+        ["accept"] = "utf-8",
+        ["origin"] = "http://sl.dhg.myharmony.com",
+        ["content-length"] = string.len(reqbody)
     },
     sink = ltn12.sink.table(respbody)
     }
   -- get body as string by concatenating table filled by sink
   respbody = table.concat(respbody)
   print(result,respcode,respstatus)
-  print(utils.stringify_table(respbody))
+  local resp = json.decode(respbody)
+  print(resp.data.activeRemoteId)
+  hubId = resp.data.activeRemoteId;
+  hello_world_driver:call_with_delay(1, function ()
+    ws_connect(device)
+  end, 'WS START TIMER')
 end
 --End Harmony HTTP
 
 
-hello_world_driver:call_with_delay(1, function ()
-  ws_connect()
-end, 'WS START TIMER')
 -- run the driver
 hello_world_driver:run()

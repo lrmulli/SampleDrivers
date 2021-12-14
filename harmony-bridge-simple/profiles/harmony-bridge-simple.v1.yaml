@@ -1,15 +1,19 @@
 # harmony-bridge-simple
 name: harmony-bridge-simple.v1
 components:
-- id: main
-  capabilities:
-  - id: universevoice35900.harmonyCommand2
-    version: 1
-  categories:
-  - name: Switch
+  - label: main
+    id: main
+    capabilities:
+      - id: momentary
+        version: 1
+      - id: universevoice35900.harmonycommand3
+        version: 1
+      - id: universevoice35900.devicelist
+        version: 1
+    categories: []
 preferences:
   - title: "IP Address"
-    name: ipAddress
+    name: deviceaddr
     description: "IP address of the HarmonyHub"
     required: true
     preferenceType: string
@@ -17,7 +21,16 @@ preferences:
       minLength: 7
       maxLength: 15
       stringType: text
-      default: ""
+      default: "192.168.1.n"
+  - title: "Button Command"
+    name: buttoncommand
+    description: "Command for embedded button"
+    required: true
+    preferenceType: string
+    definition:
+      minLength: 7
+      stringType: text
+      default: "{put your harmony command here}"
 
 
 

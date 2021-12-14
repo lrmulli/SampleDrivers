@@ -1,0 +1,22 @@
+{
+  "dashboard": {
+      "states": [],
+      "actions": [],
+      "basicPlus": []
+  },
+  "detailView": [
+      {
+          "label": "devicelist",
+          "displayType": "state",
+          "state": {
+              "label": "{{devicelist.value}}"
+          }
+      }
+  ],
+  "automation": {
+      "conditions": [],
+      "actions": []
+  },
+  "id": "universevoice35900.devicelist",
+  "version": 1
+}

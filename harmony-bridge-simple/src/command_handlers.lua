@@ -16,5 +16,8 @@ function command_handlers.harmonycommand(driver, device, command)
   end
   
 end
+function command_handlers.push(driver, device, command)
+  log.info("button pushed");
+end
 
 return command_handlers

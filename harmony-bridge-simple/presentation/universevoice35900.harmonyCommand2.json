@@ -5,8 +5,7 @@
           "label": "{{harmonyCommand.value}}"
         }
       ],
-      "actions": [
-      ],
+      "actions": [],
       "basicPlus": []
     },
     "detailView": [
@@ -39,6 +38,6 @@
         }
       ]
     },
-    "id": "universevoice35900.harmonyCommand2",
+    "id": "universevoice35900.harmonycommand3",
     "version": 1
-  }
+}
