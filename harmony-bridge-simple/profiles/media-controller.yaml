@@ -1,0 +1,23 @@
+name: simple-test
+components:
+- id: harmonycommand
+  capabilities:
+  - id: universevoice35900.harmonycommand3
+    version: 1
+- id: devicelist
+  capabilities:
+  - id: universevoice35900.devicelist
+    version: 1
+- id: main
+  label: TestButton 
+  capabilities:
+  - id: momentary
+    version: 1  
+  categories:
+  - name: RemoteController
+metadata:
+  mnmn: SmartThingsCommunity
+  ocfDeviceType: x.com.st.d.remotecontroller  
+
+
+

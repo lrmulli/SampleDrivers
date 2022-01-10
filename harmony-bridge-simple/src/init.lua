@@ -34,22 +34,28 @@ local function device_added(driver, device)
   -- set a default or queried state for each capability attribute
   device:emit_event(harmonycommand.harmonyCommand("StartUp"))
   device:emit_event(devicelist.devicelist("StartUp"))
-  device:emit_event(capabilities['momentary'].push())
+  device:emit_component_event(device.profile.components.testbutton, capabilities.momentary.commands.push)
 end
 
 -- this is called both when a device is added (but after `added`) and after a hub reboots.
 local function device_init(driver, device)
   log.info("[" .. device.id .. "] Initializing Harmony device")
   -- mark device as online so it can be controlled from the app
+  if (device.preferences.deviceaddr ~= "192.168.1.n") then
+    ipAddress = device.preferences.deviceaddr
+    getHarmonyHubId(device,ipAddress)
+    --connect_ws_harmony(device)
+  end
   device:online()
 end
 
 local function device_info_changed(driver, device, event, args)
   -- Did my preference value change
     if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
-      log.info("IP Address Changed",device.preferences.deviceaddr)
+      log.info("IP Address Changed"..device.preferences.deviceaddr)
       ipAddress = device.preferences.deviceaddr
       getHarmonyHubId(device,ipAddress)
+      connect_ws_harmony(device)
     end
     
 end
@@ -77,7 +83,7 @@ local hello_world_driver = Driver("harmony-bridge-simple.v1", {
     [capabilities["universevoice35900.harmonycommand3"].commands.setHarmonyCommand.ID] = command_handlers.harmonycommand,
     },
     [capabilities.momentary.ID] = {
-      [capabilities.switch.commands.push.NAME] = command_handlers.push,
+      [capabilities.momentary.commands.push.NAME] = command_handlers.push,
     }
   }
 })
@@ -149,11 +155,15 @@ function receiveConfig(device,config)
       end
     end
   end
+  local thisline = ""
+  for i, a in pairs(config.data.activity) do
+    deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
+  end
   print(deviceListString)
   device:emit_event(devicelist.devicelist(deviceListString))
   --youview skip 56828046
 end
-function sendHarmonyCommand(deviceId,command,action,time)
+function sendHarmonyCommand(device,deviceId,command,action,time)
   local payload = [[{
     "hubId": "]]..hubId..[[",
     "timeout": 30,
@@ -169,7 +179,31 @@ function sendHarmonyCommand(deviceId,command,action,time)
     }
   }]]
   print(payload)
-  print(ws:send(payload))
+  local ok,close_was_clean,close_code,close_reason = ws:send(payload)
+  print(ok,close_was_clean,close_code,close_reason)
+
+end
+function sendHarmonyStartActivity(device,activityId,time)
+  local payload = [[{
+    "hubId": "]]..hubId..[[",
+    "timeout": 60,
+    "hbus": {
+      "cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?startactivity",
+      "id": "0",
+      "params": {
+        "async": "true",
+        "timestamp": "]]..time..[[",
+        "args": {
+          "rule": "start"
+        },
+        "activityId": "]]..activityId..[["
+      }
+    }
+  }]]
+  print(payload)
+  local ok,close_was_clean,close_code,close_reason = ws:send(payload)
+  print(ok,close_was_clean,close_code,close_reason)
+
 end
 
 --End Harmony Websockets
@@ -197,12 +231,14 @@ function getHarmonyHubId(device,ipAddress)
   local resp = json.decode(respbody)
   print(resp.data.activeRemoteId)
   hubId = resp.data.activeRemoteId;
+end
+--End Harmony HTTP
+function connect_ws_harmony(device)
+  log.info("connecting over websockets ip: "..ipAddress.."HubId: "..hubId)
   hello_world_driver:call_with_delay(1, function ()
     ws_connect(device)
   end, 'WS START TIMER')
 end
---End Harmony HTTP
-
 
 -- run the driver
 hello_world_driver:run()

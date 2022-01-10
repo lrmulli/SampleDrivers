@@ -1,16 +1,23 @@
 # harmony-bridge-simple
 name: harmony-bridge-simple.v1
 components:
-  - label: main
-    id: main
-    capabilities:
-      - id: momentary
-        version: 1
-      - id: universevoice35900.harmonycommand3
-        version: 1
-      - id: universevoice35900.devicelist
-        version: 1
-    categories: []
+- id: testbutton
+  label: TestButton
+  capabilities:
+  - id: momentary
+    version: 1
+- id: main
+  label: main
+  capabilities:
+  - id: universevoice35900.harmonycommand3
+    version: 1
+  - id: universevoice35900.devicelist
+    version: 1
+  categories:
+  - name: RemoteController
+metadata:
+  mnmn: SmartThingsCommunity
+  ocfDeviceType: x.com.st.d.remotecontroller  
 preferences:
   - title: "IP Address"
     name: deviceaddr
