@@ -32,19 +32,21 @@ local function device_added(driver, device)
   log.info("[" .. device.id .. "] Adding new Harmony device")
 
   -- set a default or queried state for each capability attribute
-  device:emit_event(harmonycommand.harmonyCommand("StartUp"))
-  device:emit_event(devicelist.devicelist("StartUp"))
-  device:emit_component_event(device.profile.components.testbutton, capabilities.momentary.commands.push)
+  --device:emit_event(harmonycommand.harmonyCommand("StartUp"))
+  --device:emit_event(devicelist.devicelist("StartUp"))
+  --device:emit_component_event(device.profile.components.testbutton, capabilities.momentary.commands.push)
 end
 
 -- this is called both when a device is added (but after `added`) and after a hub reboots.
 local function device_init(driver, device)
   log.info("[" .. device.id .. "] Initializing Harmony device")
   -- mark device as online so it can be controlled from the app
+  device:online()
   if (device.preferences.deviceaddr ~= "192.168.1.n") then
     ipAddress = device.preferences.deviceaddr
     getHarmonyHubId(device,ipAddress)
     --connect_ws_harmony(device)
+    device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
   end
   device:online()
 end
@@ -99,7 +101,7 @@ local params = {
 
 function ws_connect(device)
   if ipAddress ~= "" and hubId ~= ""  then
-    log.info("Configured IP Address is : ",ipAddress)
+    log.info("Configured IP Address is : "..ipAddress)
     local hub_url = "ws://"..ipAddress..":8088/?domain=svcs.myharmony.com&hubId="..hubId
     log.debug("Getting Hub ID")
     log.debug("WS_CONNECT - Connecting")
