@@ -7,7 +7,9 @@ local bit = require 'bitop.funcs'
 local socket = require'socket'
 local ws = require('websocket.client').sync({ timeout = 30 })
 local json = require "dkjson"
-local http = require('socket.http')
+--local http = require('socket.http')
+local cosock = require "cosock"
+local http = cosock.asyncify "socket.http"
 ltn12 = require("ltn12")
 local ipAddress = ""
 local hubId = ""
