@@ -215,7 +215,8 @@ function getHarmonyHubId(device,ipAddress)
   local reqbody = [[{"id":124,"cmd":"setup.account?getProvisionInfo","timeout":90000}]]
   local respbody = {} -- for the response body
   http.TIMEOUT = 65;
-  log.info("Sending request "
+  log.info("Sending request...")
+
   local result, respcode, respheaders, respstatus = http.request {
     method = "POST",
     url = "http://"..ipAddress..":8088",
@@ -230,6 +231,7 @@ function getHarmonyHubId(device,ipAddress)
     }
   -- get body as string by concatenating table filled by sink
   respbody = table.concat(respbody)
+  log.debug("Response Body "..respbody)
   print(result,respcode,respstatus)
   local resp = json.decode(respbody)
   print(resp.data.activeRemoteId)
