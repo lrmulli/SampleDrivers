@@ -214,7 +214,7 @@ function getHarmonyHubId(device,ipAddress)
   log.info("Attempting to get hubID for ipAddress "..ipAddress)
   local reqbody = [[{"id":124,"cmd":"setup.account?getProvisionInfo","timeout":90000}]]
   local respbody = {} -- for the response body
-  http.TIMEOUT = 65;
+  http.TIMEOUT = 120;
   log.info("Sending request...")
 
   local result, respcode, respheaders, respstatus = http.request {
