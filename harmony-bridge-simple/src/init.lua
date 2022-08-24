@@ -11,8 +11,6 @@ local json = require "dkjson"
 local cosock = require "cosock"
 local http = cosock.asyncify "socket.http"
 ltn12 = require("ltn12")
-local ipAddress = ""
-local hubId = ""
 
 
 -- Custom capabilities
@@ -58,9 +56,10 @@ local function device_info_changed(driver, device, event, args)
     if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
       log.info("IP Address Changed"..device.preferences.deviceaddr)
       ipAddress = device.preferences.deviceaddr
-      device:set_field("harmony_ip",device.preferences.deviceaddr)
-      log.info("stored_harmony_ip : "..device:get_field("harmony_ip"))
+      device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
+      log.info("stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
       getHarmonyHubId(device,ipAddress)
+      log.info("stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
       connect_ws_harmony(device)
     end
     
@@ -104,10 +103,11 @@ local params = {
 
 
 function ws_connect(device)
+  local hubId = device:get_field("harmony_hub_id")
+  local ipAddress = device:get_field("harmony_hub_ip")
   if ipAddress ~= "" and hubId ~= ""  then
     log.info("Configured IP Address is : "..ipAddress)
     local hub_url = "ws://"..ipAddress..":8088/?domain=svcs.myharmony.com&hubId="..hubId
-    log.debug("Getting Hub ID")
     log.debug("WS_CONNECT - Connecting")
     local r, code, _, sock = ws:connect(hub_url,"echo", params)
     print('WS_CONNECT - STATUS', r, code)
@@ -121,7 +121,7 @@ function ws_connect(device)
       end,"SocketChannelHandler")
       log.debug("Registering Channel Handler Code finished")
     end
-    getConfig()
+    getConfig(device)
   else
     log.info("Check IP Address Configuration")
   end
@@ -145,7 +145,9 @@ function my_ws_tick(device)
   end
 end
 
-function getConfig()
+function getConfig(device)
+  local hubId = device:get_field("harmony_hub_id")
+  local ipAddress = device:get_field("harmony_hub_ip")
   local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
   print(ws:send(payload))
 end
@@ -170,6 +172,7 @@ function receiveConfig(device,config)
   --youview skip 56828046
 end
 function sendHarmonyCommand(device,deviceId,command,action,time)
+  local hubId = device:get_field("harmony_hub_id")
   local payload = [[{
     "hubId": "]]..hubId..[[",
     "timeout": 30,
@@ -190,6 +193,7 @@ function sendHarmonyCommand(device,deviceId,command,action,time)
 
 end
 function sendHarmonyStartActivity(device,activityId,time)
+  local hubId = device:get_field("harmony_hub_id")
   local payload = [[{
     "hubId": "]]..hubId..[[",
     "timeout": 60,
@@ -239,10 +243,12 @@ function getHarmonyHubId(device,ipAddress)
   print(result,respcode,respstatus)
   local resp = json.decode(respbody)
   print(resp.data.activeRemoteId)
-  hubId = resp.data.activeRemoteId;
+  device:set_field("harmony_hub_id",resp.data.activeRemoteId)
 end
 --End Harmony HTTP
 function connect_ws_harmony(device)
+  local hubId = device:get_field("harmony_hub_id")
+  local ipAddress = device:get_field("harmony_hub_ip")
   log.info("connecting over websockets ip: "..ipAddress.."HubId: "..hubId)
   hello_world_driver:call_with_delay(1, function ()
     ws_connect(device)
