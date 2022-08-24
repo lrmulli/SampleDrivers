@@ -58,6 +58,8 @@ local function device_info_changed(driver, device, event, args)
     if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
       log.info("IP Address Changed"..device.preferences.deviceaddr)
       ipAddress = device.preferences.deviceaddr
+      device.set_field("harmony_ip",device.preferences.deviceaddr)
+      log.info("stored_harmony_ip : "..device.get_field("harmony_ip"))
       getHarmonyHubId(device,ipAddress)
       connect_ws_harmony(device)
     end
