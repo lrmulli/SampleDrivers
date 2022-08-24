@@ -43,7 +43,8 @@ local function device_init(driver, device)
   -- mark device as online so it can be controlled from the app
   device:online()
   if (device.preferences.deviceaddr ~= "192.168.1.n") then
-    ipAddress = device.preferences.deviceaddr
+    local ipAddress = device.preferences.deviceaddr
+    device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
     getHarmonyHubId(device,ipAddress)
     --connect_ws_harmony(device)
     device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
