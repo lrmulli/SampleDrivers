@@ -10,7 +10,7 @@ function discovery.handle_discovery(driver, _should_continue)
     type = "LAN",
     -- the DNI must be unique across your hub, using static ID here so that we
     -- only ever have a single instance of this "device"
-    device_network_id = "harmony thing",
+    device_network_id = "harmony_bridge_1",
     label = "Harmony Bridge Simple",
     profile = "harmony-bridge-simple.v1",
     manufacturer = "SmartThingsCommunity",

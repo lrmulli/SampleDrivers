@@ -63,7 +63,13 @@ local function device_info_changed(driver, device, event, args)
       log.info("stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
       connect_ws_harmony(device)
     end
-    
+    --check for deviceid changes
+    if args.old_st_store.preferences.deviceid ~= device.preferences.deviceid then
+      log.info("Additional Device Id field changed"..device.preferences.deviceid)
+      if (device.preferences.deviceid ~= "1") then
+
+      end
+    end
 end
 
 

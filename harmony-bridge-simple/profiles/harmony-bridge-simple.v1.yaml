@@ -38,6 +38,16 @@ preferences:
       minLength: 7
       stringType: text
       default: "{put your harmony command here}"
+  - title: "Additional Harmony Identifier"
+    name: deviceid
+    description: "Identifier of the additional Hub you wish to add"
+    required: true
+    preferenceType: string
+    definition:
+      minLength: 1
+      maxLength: 1
+      stringType: text
+      default: "1"
 
 
 
