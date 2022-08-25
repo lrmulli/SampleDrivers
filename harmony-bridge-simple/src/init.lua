@@ -149,7 +149,7 @@ function ws_connect(device)
 end
 function my_ws_tick(device)
   local ws = device:get_field("ws")
-  print("In Tick Function")
+  print("In Tick Function "..device.id)
   local payload, opcode, c, d, err = ws:receive()
   --print("Payload: ",payload)
   print("Opcode: ",opcode)
