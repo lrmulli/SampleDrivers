@@ -135,7 +135,7 @@ function ws_connect(device)
     local r, code, _, sock = ws:connect(hub_url,"echo", params)
     print('WS_CONNECT - STATUS', r, code)
   
-    
+    device:set_field("ws",ws)
     if r then
       log.debug("Registering Channel Handler")
       log.debug()
@@ -143,6 +143,7 @@ function ws_connect(device)
         my_ws_tick(device)
       end,"SocketChannelHandler"..device.id)
       log.debug("Registering Channel Handler Code finished")
+      device:set_field("ws",ws)
     end
     getConfig(device)
   else
