@@ -5,7 +5,7 @@ local utils = require "st.utils"
 local log = require "log"
 local bit = require 'bitop.funcs'
 local socket = require'socket'
-local ws = require('websocket.client').sync({ timeout = 30 })
+--local ws = require('websocket.client').sync({ timeout = 30 })
 local json = require "dkjson"
 --local http = require('socket.http')
 local cosock = require "cosock"
@@ -122,6 +122,8 @@ local params = {
 
 
 function ws_connect(device)
+  local ws = require('websocket.client').sync({ timeout = 30 })
+  device:set_field("ws",ws)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   if ipAddress ~= "" and hubId ~= ""  then
@@ -146,6 +148,7 @@ function ws_connect(device)
   end
 end
 function my_ws_tick(device)
+  local ws = device:get_field("ws")
   print("In Tick Function")
   local payload, opcode, c, d, err = ws:receive()
   --print("Payload: ",payload)
@@ -165,6 +168,7 @@ function my_ws_tick(device)
 end
 
 function getConfig(device)
+  local ws = device:get_field("ws")
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
@@ -191,6 +195,7 @@ function receiveConfig(device,config)
   --youview skip 56828046
 end
 function sendHarmonyCommand(device,deviceId,command,action,time)
+  local ws = device:get_field("ws")
   local hubId = device:get_field("harmony_hub_id")
   local payload = [[{
     "hubId": "]]..hubId..[[",
@@ -212,6 +217,7 @@ function sendHarmonyCommand(device,deviceId,command,action,time)
 
 end
 function sendHarmonyStartActivity(device,activityId,time)
+  local ws = device:get_field("ws")
   local hubId = device:get_field("harmony_hub_id")
   local payload = [[{
     "hubId": "]]..hubId..[[",
