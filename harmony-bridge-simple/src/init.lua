@@ -139,7 +139,7 @@ function ws_connect(device)
       log.debug()
       hello_world_driver:register_channel_handler(ws.sock, function ()
         my_ws_tick(device)
-      end,"SocketChannelHandler")
+      end,"SocketChannelHandler"..device.id)
       log.debug("Registering Channel Handler Code finished")
     end
     getConfig(device)
