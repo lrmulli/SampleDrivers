@@ -87,6 +87,8 @@ end
 
 -- this is called when a device is removed by the cloud and synchronized down to the hub
 local function device_removed(driver, device)
+  local ws = device:get_field("ws")
+  hello_world_driver:unregister_channel_handler(ws.sock)
   log.info("[" .. device.id .. "] Removing Harmony device")
 end
 
