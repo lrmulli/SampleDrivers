@@ -147,7 +147,9 @@ function ws_connect(device)
       log.debug("Registering Channel Handler Code finished")
       device:set_field("ws",ws)
     end
-    getConfig(device)
+    if (device.preferences.configonconnect == true) then
+      getConfig(device)
+    end
   else
     log.info("Check IP Address Configuration")
   end

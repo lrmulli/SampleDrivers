@@ -56,5 +56,11 @@ preferences:
     preferenceType: boolean
     definition:
       default: false
+  - name: "configonconnect"
+    title: "Get Config On Connect"
+    required: true
+    preferenceType: boolean
+    definition:
+      default: true
 
 
