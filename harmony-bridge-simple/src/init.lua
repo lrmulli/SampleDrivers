@@ -185,6 +185,9 @@ function getConfig(device)
   local ipAddress = device:get_field("harmony_hub_ip")
   local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
   print(ws:send(payload))
+  if (device.preferences.verboserecdlog == true) then
+    device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
+  end
 end
 function receiveConfig(device,config)
   print("Config Received")
@@ -226,7 +229,9 @@ function sendHarmonyCommand(device,deviceId,command,action,time)
   print(payload)
   local ok,close_was_clean,close_code,close_reason = ws:send(payload)
   print(ok,close_was_clean,close_code,close_reason)
-
+  if (device.preferences.verboserecdlog == true) then
+    device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
+  end
 end
 function sendHarmonyStartActivity(device,activityId,time)
   local ws = device:get_field("ws")
@@ -250,7 +255,9 @@ function sendHarmonyStartActivity(device,activityId,time)
   print(payload)
   local ok,close_was_clean,close_code,close_reason = ws:send(payload)
   print(ok,close_was_clean,close_code,close_reason)
-
+  if (device.preferences.verboserecdlog == true) then
+    device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
+  end
 end
 
 --End Harmony Websockets

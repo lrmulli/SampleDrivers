@@ -51,7 +51,7 @@ preferences:
       stringType: text
       default: "1"
   - name: "verboserecdlog"
-    title: "Verbose recd Logging"
+    title: "Verbose sent / recd Logging"
     required: true
     preferenceType: boolean
     definition:
