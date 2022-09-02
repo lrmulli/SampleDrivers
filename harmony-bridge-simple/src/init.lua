@@ -23,6 +23,7 @@ capabilities["universevoice35900.devicelist"] = devicelist
 -- require custom handlers from driver package
 local command_handlers = require "command_handlers"
 local discovery = require "discovery"
+local logger = capabilities["universevoice35900.log"]
 
 -----------------------------------------------------------------
 -- local functions
