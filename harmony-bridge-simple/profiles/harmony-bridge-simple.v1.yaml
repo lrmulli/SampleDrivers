@@ -13,6 +13,8 @@ components:
     version: 1
   - id: universevoice35900.devicelist
     version: 1
+  - id: universevoice35900.log
+    version: 1
   categories:
   - name: RemoteController
 metadata:
@@ -48,6 +50,11 @@ preferences:
       maxLength: 1
       stringType: text
       default: "1"
-
+  - name: "verboserecdlog"
+    title: "Verbose recd Logging"
+    required: true
+    preferenceType: boolean
+    definition:
+      default: false
 
 

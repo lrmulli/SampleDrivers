@@ -158,6 +158,11 @@ function my_ws_tick(device)
   --print("Payload: ",payload)
   print("Opcode: ",opcode)
   print("Error: ",err)
+  if (device.preferences.verboserecdlog == true) then
+    device:emit_event(logger.logger("Opcode: "..opcode))
+    device:emit_event(logger.logger("Error: "..err))
+    device:emit_event(logger.logger("Payload Recd: "..payload))
+  end
   if opcode == 9.0 then  -- PING 
     print('SEND PONG:', ws:send(payload, 10)) -- Send PONG
   end

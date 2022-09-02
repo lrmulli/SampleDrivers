@@ -1,0 +1,14 @@
+status: proposed
+name: log
+attributes:
+  logger:
+    schema:
+      type: object
+      properties:
+        value:
+          type: string
+      additionalProperties: false
+      required:
+        - value
+    enumCommands: []
+commands: {}

@@ -1,0 +1,15 @@
+{
+    "tag":"en",
+    "dashboard": {
+        "states": [],
+        "actions": [],
+        "basicPlus": []
+    },
+    "detailView": [],
+    "automation": {
+        "conditions": [],
+        "actions": []
+    },
+    "id": "universevoice35900.log",
+    "version": 1
+  }
