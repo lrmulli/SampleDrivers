@@ -7,9 +7,8 @@ components:
   - id: switch
     version: 1
 - id: activitylogger
-  label: main
+  label: activitylogger
   capabilities:
-    version: 1
   - id: universevoice35900.log
     version: 1
   categories:
