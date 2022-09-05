@@ -84,7 +84,7 @@ local function device_info_changed(driver, device, event, args)
       end
     end
     if args.old_st_store.preferences.activitydevices ~= device.preferences.activitydevices then
-      log.info("Activity Devices setting changed - "..device.preferences.activitydevices)
+      log.info("Activity Devices setting changed - ")
       if (device.preferences.activitydevices == true) then
         local activityList = device:get_field("activityList")
         for i, a in pairs(activityList) do
