@@ -7,14 +7,12 @@ local hbactivity_command_handlers = require "hbactivity_command_handlers"
 
 
 local hbactivity_handler = {
-  NAME = "HBActivity",
   capability_handlers = {
     [capabilities.switch.ID] = {
-    [capabilities.switch.commands.on.NAME] = hbactivity_command_handlers.switch_on,
-    [capabilities.switch.commands.off.NAME] = hbactivity_command_handlers.switch_off,
-    }
-  },
-  sub_drivers = {}, -- could optionally nest further.  The can_handles would be chained
+        [capabilities.switch.commands.on.NAME] = hbactivity_command_handlers.switch_on,
+        [capabilities.switch.commands.off.NAME] = hbactivity_command_handlers.switch_off,
+        }
+    },
   can_handle = function(opts, driver, device, ...)
     return device:component_exists("activityswitch")
   end,
