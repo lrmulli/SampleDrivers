@@ -109,7 +109,7 @@ local function device_info_changed(driver, device, event, args)
       end
     end
   end
-  if(device:get_manufacturer() == "HBActivity") then 
+  if(device:component_exists("activityswitch")) then --this means that it is activity device
     device:emit_event(capabilities.switch.switch.off())
   end
 end

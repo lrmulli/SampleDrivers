@@ -1,7 +1,7 @@
 # harmony-bridge-activity
 name: harmony-bridge-activity.v1
 components:
-- id: main
+- id: activityswitch
   label: ActivityStatus
   capabilities:
   - id: switch
