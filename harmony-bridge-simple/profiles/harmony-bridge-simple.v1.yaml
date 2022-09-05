@@ -62,5 +62,11 @@ preferences:
     preferenceType: boolean
     definition:
       default: true
+  - name: "activitydevices"
+    title: "Activity Devices Enabled?"
+    required: true
+    preferenceType: boolean
+    definition:
+      default: false
 
 

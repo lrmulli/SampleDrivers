@@ -83,6 +83,27 @@ local function device_info_changed(driver, device, event, args)
         driver:try_create_device(metadata)
       end
     end
+    if args.old_st_store.preferences.activitydevices ~= device.preferences.activitydevices then
+      log.info("Activity Devices setting changed - "..device.preferences.activitydevices)
+      if (device.preferences.activitydevices == true) then
+        local activityList = device:get_field("activityList")
+        for i, a in pairs(activityList) do
+          --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
+          local metadata = {
+            type = "LAN",
+            -- the DNI must be unique across your hub, using static ID here so that we
+            -- only ever have a single instance of this "device"
+            device_network_id = "harmony_bridge_activity"..a.id,
+            label = "HB Activity - "..a.label,
+            profile = "harmony-bridge-activity.v1",
+            manufacturer = "SmartThingsCommunity",
+            model = "v1",
+            vendor_provided_label = nil
+          }
+          driver:try_create_device(metadata)
+        end
+      end
+    end
 end
 
 
@@ -207,6 +228,8 @@ function receiveConfig(device,config)
   end
   print(deviceListString)
   device:emit_event(devicelist.devicelist(deviceListString))
+  local activityList = config.data.activity
+  device:set_field("activityList",activityList)
   --youview skip 56828046
 end
 function sendHarmonyCommand(device,deviceId,command,action,time)

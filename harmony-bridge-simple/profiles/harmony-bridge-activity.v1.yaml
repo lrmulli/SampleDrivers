@@ -1,0 +1,13 @@
+# harmony-bridge-simple
+name: harmony-bridge-simple.v1
+components:
+- id: main
+  label: ActivityStatus
+  capabilities:
+  - id: switch
+    version: 1
+  categories:
+  - name: RemoteController
+metadata:
+  mnmn: SmartThingsCommunity
+  ocfDeviceType: x.com.st.d.remotecontroller
