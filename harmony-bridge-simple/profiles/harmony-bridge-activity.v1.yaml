@@ -13,7 +13,6 @@ components:
   - id: universevoice35900.log
     version: 1
   categories:
-  categories:
   - name: RemoteController
 metadata:
   mnmn: SmartThingsCommunity
