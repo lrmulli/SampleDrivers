@@ -22,6 +22,7 @@ local devicelist = capabilities.build_cap_from_json_string(capdefs.devicelistJso
 capabilities["universevoice35900.devicelist"] = devicelist
 -- require custom handlers from driver package
 local command_handlers = require "command_handlers"
+local hbactivity_message_broker = require "hbactivity_message_broker"
 local discovery = require "discovery"
 local logger = capabilities["universevoice35900.log"]
 
@@ -208,6 +209,9 @@ function my_ws_tick(device)
 --  print("Response: ",utils.stringify_table(response))
   if response.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?config" then
     receiveConfig(device,response)
+  end
+  if response.type == "connect.stateDigest?notify" then
+    hbactivity_message_broker.activityMessageReceived(device,msg)
   end
 end
 
