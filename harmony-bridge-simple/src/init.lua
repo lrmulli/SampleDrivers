@@ -97,8 +97,8 @@ local function device_info_changed(driver, device, event, args)
             device_network_id = "harmony_bridge_activity"..a.id,
             label = "HB Activity - "..a.label,
             profile = "harmony-bridge-activity.v1",
-            manufacturer = "SmartThingsCommunity",
-            model = "v1",
+            manufacturer = "HBActivity",
+            model = "HBActivity",
             vendor_provided_label = nil
           }
           driver:try_create_device(metadata)
@@ -134,7 +134,8 @@ local hello_world_driver = Driver("harmony-bridge-simple.v1", {
     },
     [capabilities.momentary.ID] = {
       [capabilities.momentary.commands.push.NAME] = command_handlers.push,
-    }
+    },
+    sub_drivers = { require("hbactivity")}
   }
 })
 
