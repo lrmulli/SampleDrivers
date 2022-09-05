@@ -29,8 +29,7 @@ local function device_added(driver, device)
   end
 
 local hbactivity_handler = {
-  NAME = "HBActivity"
-  },
+  NAME = "HBActivity",
   lifecycle_handlers = {
     added = device_added,
     init = device_init,
