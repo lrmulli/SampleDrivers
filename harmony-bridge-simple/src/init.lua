@@ -84,10 +84,11 @@ local function device_info_changed(driver, device, event, args)
       end
     end
     if args.old_st_store.preferences.activitydevices ~= device.preferences.activitydevices then
-      log.info("Activity Devices setting changed - ")
+      log.info("Activity Devices setting changed")
       if (device.preferences.activitydevices == true) then
         local activityList = device:get_field("activityList")
         for i, a in pairs(activityList) do
+          log.info("Creating Activity Device for - ",a.label)
           --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
           local metadata = {
             type = "LAN",
