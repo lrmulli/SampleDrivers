@@ -40,94 +40,80 @@ end
 
 -- this is called both when a device is added (but after `added`) and after a hub reboots.
 local function device_init(driver, device)
-  local model = device:get_model()
-  if (model == "v1") then
-    device:try_update_metadata({model = "HBHub"})
-  end
   log.info("[" .. device.id .. "] Initializing Harmony device")
   -- mark device as online so it can be controlled from the app
   device:online()
-  
-  if (model == "HBHub") then
-    if (device.preferences.deviceaddr ~= "192.168.1.n") then
-      local ipAddress = device.preferences.deviceaddr
-      device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
-      getHarmonyHubId(device,ipAddress)
-      --connect_ws_harmony(device)
-      device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
-    end
+  if (device.preferences.deviceaddr ~= "192.168.1.n") then
+    local ipAddress = device.preferences.deviceaddr
+    device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
+    getHarmonyHubId(device,ipAddress)
+    --connect_ws_harmony(device)
+    device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
   end
   device:online()
 end
 
 local function device_info_changed(driver, device, event, args)
-  local model = device:get_model()
-  if (model == "HBHub") then
-      -- Did my preference value change
-      if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
-        log.info("IP Address Changed"..device.preferences.deviceaddr)
-        ipAddress = device.preferences.deviceaddr
-        device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
-        log.info("stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
-        getHarmonyHubId(device,ipAddress)
-        log.info("stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
-        connect_ws_harmony(device)
+  -- Did my preference value change
+    if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
+      log.info("IP Address Changed"..device.preferences.deviceaddr)
+      ipAddress = device.preferences.deviceaddr
+      device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
+      log.info("stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
+      getHarmonyHubId(device,ipAddress)
+      log.info("stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
+      connect_ws_harmony(device)
+    end
+    --check for deviceid changes
+    if args.old_st_store.preferences.deviceid ~= device.preferences.deviceid then
+      log.info("Additional Device Id field changed - "..device.preferences.deviceid)
+      if (device.preferences.deviceid ~= "1") then
+        local did = device.preferences.deviceid
+        local metadata = {
+          type = "LAN",
+          -- the DNI must be unique across your hub, using static ID here so that we
+          -- only ever have a single instance of this "device"
+          device_network_id = "harmony_bridge_"..did,
+          label = "Harmony Bridge Simple - "..did,
+          profile = "harmony-bridge-simple.v1",
+          manufacturer = "SmartThingsCommunity",
+          model = "v1",
+          vendor_provided_label = nil
+        }
+        driver:try_create_device(metadata)
       end
-      --check for deviceid changes
-      if args.old_st_store.preferences.deviceid ~= device.preferences.deviceid then
-        log.info("Additional Device Id field changed - "..device.preferences.deviceid)
-        if (device.preferences.deviceid ~= "1") then
-          local did = device.preferences.deviceid
+    end
+    if args.old_st_store.preferences.activitydevices ~= device.preferences.activitydevices then
+      log.info("Activity Devices setting changed")
+      if (device.preferences.activitydevices == true) then
+        local activityList = device:get_field("activityList")
+        for i, a in pairs(activityList) do
+          log.info("Creating Activity Device for - ",a.label)
+          --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
           local metadata = {
             type = "LAN",
             -- the DNI must be unique across your hub, using static ID here so that we
             -- only ever have a single instance of this "device"
-            device_network_id = "harmony_bridge_"..did,
-            label = "Harmony Bridge Simple - "..did,
-            profile = "harmony-bridge-simple.v1",
+            device_network_id = "harmony_bridge_activity"..a.id,
+            label = "HB Activity - "..a.label,
+            profile = "harmony-bridge-activity.v1",
             manufacturer = "SmartThingsCommunity",
-            model = "HBHub",
+            model = "v1",
             vendor_provided_label = nil
           }
           driver:try_create_device(metadata)
         end
       end
-      if args.old_st_store.preferences.activitydevices ~= device.preferences.activitydevices then
-        log.info("Activity Devices setting changed")
-        if (device.preferences.activitydevices == true) then
-          local activityList = device:get_field("activityList")
-          for i, a in pairs(activityList) do
-            log.info("Creating Activity Device for - ",a.label)
-            --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
-            local metadata = {
-              type = "LAN",
-              -- the DNI must be unique across your hub, using static ID here so that we
-              -- only ever have a single instance of this "device"
-              device_network_id = "harmony_bridge_activity"..a.id,
-              label = "HB Activity - "..a.label,
-              profile = "harmony-bridge-activity.v1",
-              manufacturer = "SmartThingsCommunity",
-              model = "HBActivity",
-              vendor_provided_label = nil
-            }
-            driver:try_create_device(metadata)
-          end
-        end
-      end
-  end
-
+    end
 end
 
 
 -- this is called when a device is removed by the cloud and synchronized down to the hub
 local function device_removed(driver, device)
-  local model = device:get_model()
-  if (model == "HBHub") then
-    local ws = device:get_field("ws")
-    driver:unregister_channel_handler(ws.sock)
-    ws:close(4001,'lost interest')
-    log.info("[" .. device.id .. "] Removing Harmony device")
-  end
+  local ws = device:get_field("ws")
+  driver:unregister_channel_handler(ws.sock)
+  ws:close(4001,'lost interest')
+  log.info("[" .. device.id .. "] Removing Harmony device")
 end
 
 
