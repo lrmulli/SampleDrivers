@@ -16,7 +16,7 @@ local hbactivity_handler = {
   },
   sub_drivers = {}, -- could optionally nest further.  The can_handles would be chained
   can_handle = function(opts, driver, device, ...)
-    return device:get_manufacturer() == "HBActivity"
+    return device:component_exists("activityswitch")
   end,
 }
 
