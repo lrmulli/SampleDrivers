@@ -210,9 +210,15 @@ function my_ws_tick(device)
   if response.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?config" then
     receiveConfig(device,response)
   end
+
+  --activity broker hooks
   if response.type == "connect.stateDigest?notify" then
-    hbactivity_message_broker.activityMessageReceived(device,msg)
+    hbactivity_message_broker.activityMessageReceived(device,response)
   end
+  if response.type == "harmo-ny.engine?startActivityFinished" then
+    hbactivity_message_broker.activityMessageReceived(device,response)
+  end
+  --end activity broker hooks
 end
 
 function getConfig(device)
