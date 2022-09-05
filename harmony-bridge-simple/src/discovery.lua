@@ -14,7 +14,7 @@ function discovery.handle_discovery(driver, _should_continue)
     label = "Harmony Bridge Simple - 1",
     profile = "harmony-bridge-simple.v1",
     manufacturer = "SmartThingsCommunity",
-    model = "v1",
+    model = "HBHub",
     vendor_provided_label = nil
   }
 
