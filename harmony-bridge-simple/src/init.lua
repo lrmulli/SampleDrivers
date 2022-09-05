@@ -212,12 +212,7 @@ function my_ws_tick(device)
   end
 
   --activity broker hooks
-  if response.type == "connect.stateDigest?notify" then
-    hbactivity_message_broker.activityMessageReceived(device,response)
-  end
-  if response.type == "harmo-ny.engine?startActivityFinished" then
-    hbactivity_message_broker.activityMessageReceived(device,response)
-  end
+  hbactivity_message_broker.messageReceived(device,response)
   --end activity broker hooks
 end
 
