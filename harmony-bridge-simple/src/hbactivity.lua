@@ -7,6 +7,7 @@ local hbactivity_command_handlers = require "hbactivity_command_handlers"
 
 
 local hbactivity_handler = {
+NAME = "HBActivityHandler",
   capability_handlers = {
     [capabilities.switch.ID] = {
         [capabilities.switch.commands.on.NAME] = hbactivity_command_handlers.switch_on,
