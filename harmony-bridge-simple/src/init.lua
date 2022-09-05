@@ -144,8 +144,8 @@ local hello_world_driver = Driver("harmony-bridge-simple.v1", {
     [capabilities.momentary.ID] = {
       [capabilities.momentary.commands.push.NAME] = command_handlers.push,
     },
-    sub_drivers = { require("hbactivity")}
-  }
+  },
+  sub_drivers = { require("hbactivity")}
 })
 
 --Harmony Websockets
