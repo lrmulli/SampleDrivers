@@ -14,7 +14,7 @@ local hbactivity_handler = {
         }
     },
   can_handle = function(opts, driver, device, ...)
-    return device:component_exists("activityswitch")
+    return device:component_exists("activitylogger")
   end,
 }
 

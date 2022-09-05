@@ -48,9 +48,8 @@ local function device_init(driver, device)
       device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
     end
   end
-  if(device:component_exists("activityswitch")) then --this means that it is activity device
+  if(device:component_exists("activitylogger")) then --this means that it is activity device
     device:emit_event(capabilities.switch.switch.off())
-    log.info(utils.stringify_table(driver, ActivitySwitch, true))
   end
 end
 
