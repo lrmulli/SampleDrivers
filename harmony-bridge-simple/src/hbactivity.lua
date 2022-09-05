@@ -3,6 +3,8 @@ local capabilities = require "st.capabilities"
 local Driver = require "st.driver"
 local log = require "log"
 
+local hbactivity_command_handlers = require "hbactivity_command_handlers"
+
 local function device_added(driver, device)
     log.info("[" .. device.id .. "] Adding new Harmony Activity device")
   
@@ -38,8 +40,8 @@ local hbactivity_handler = {
   },
   capability_handlers = {
     [capabilities.switch.ID] = {
-    [capabilities.switch.commands.on.NAME] = command_handlers.switch_on,
-    [capabilities.switch.commands.off.NAME] = command_handlers.switch_off,
+    [capabilities.switch.commands.on.NAME] = hbactivity_command_handlers.switch_on,
+    [capabilities.switch.commands.off.NAME] = hbactivity_command_handlers.switch_off,
     }
   },
   sub_drivers = {}, -- could optionally nest further.  The can_handles would be chained
