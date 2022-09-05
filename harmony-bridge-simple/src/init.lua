@@ -39,7 +39,7 @@ local function device_init(driver, device)
   log.info("[" .. device.id .. "] Initializing Harmony device")
   -- mark device as online so it can be controlled from the app
   device:online()
-  if (device:component_exists("testbutton")) then
+  if (device:component_exists("testbutton")) then --this means that it is a harmony hub
     if (device.preferences.deviceaddr ~= "192.168.1.n") then
       local ipAddress = device.preferences.deviceaddr
       device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
@@ -52,6 +52,12 @@ end
 
 local function device_info_changed(driver, device, event, args)
   -- Did my preference value change
+  if (device:component_exists("testbutton")) then --this means that it is a harmony hub
+    if args.old_st_store.preferences.configonconnect ~= device.preferences.configonconnect then
+      if (device.preferences.configonconnect == true) then
+        getConfig(device)
+      end
+    end
     if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
       log.info("IP Address Changed"..device.preferences.deviceaddr)
       ipAddress = device.preferences.deviceaddr
@@ -102,14 +108,17 @@ local function device_info_changed(driver, device, event, args)
         end
       end
     end
+  end
 end
 
 
 -- this is called when a device is removed by the cloud and synchronized down to the hub
 local function device_removed(driver, device)
-  local ws = device:get_field("ws")
-  driver:unregister_channel_handler(ws.sock)
-  ws:close(4001,'lost interest')
+  if (device:component_exists("testbutton")) then --this means that it is a harmony hub
+    local ws = device:get_field("ws")
+    driver:unregister_channel_handler(ws.sock)
+    ws:close(4001,'lost interest')
+  end
   log.info("[" .. device.id .. "] Removing Harmony device")
 end
 
