@@ -1,5 +1,5 @@
-# harmony-bridge-simple
-name: harmony-bridge-simple.v1
+# harmony-bridge-activity
+name: harmony-bridge-activity.v1
 components:
 - id: main
   label: ActivityStatus
