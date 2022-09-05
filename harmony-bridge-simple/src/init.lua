@@ -50,7 +50,7 @@ local function device_init(driver, device)
   end
   if(device:component_exists("activityswitch")) then --this means that it is activity device
     device:emit_event(capabilities.switch.switch.off())
-    log.info(utils.stringify_table(device, ActivitySwitch, true))
+    log.info(utils.stringify_table(driver, ActivitySwitch, true))
   end
 end
 
