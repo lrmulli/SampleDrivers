@@ -18,6 +18,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     local device_list = driver:get_devices()
     for _, d in ipairs(device_list) do
         log.info("DeviceID:",d.id)
+        log.info("Device Meta:",d.metadata)
     end
 end
 
