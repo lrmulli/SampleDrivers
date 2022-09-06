@@ -24,7 +24,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
             log.info("Device Parent: ",d.parent_device_id)
             log.info("Device Activity:",d.vendor_provided_label)
             if msg.type == "connect.stateDigest?notify" then
-                d:emit_event(logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
+                d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
             end
         end
     end
