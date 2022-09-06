@@ -101,12 +101,13 @@ local function device_info_changed(driver, device, event, args)
             type = "LAN",
             -- the DNI must be unique across your hub, using static ID here so that we
             -- only ever have a single instance of this "device"
-            device_network_id = "harmony_bridge_activity"..a.id,
+            device_network_id = "harmony_bridge_activity_"..a.id,
             label = "HB Activity - "..a.label,
             profile = "harmony-bridge-activity.v1",
             manufacturer = "HBActivity",
             model = "HBActivity",
-            vendor_provided_label = nil
+            vendor_provided_label = a.id,
+            parent_device_id = device.id
           }
           driver:try_create_device(metadata)
         end
