@@ -212,7 +212,7 @@ function my_ws_tick(device)
   end
 
   --activity broker hooks
-  hbactivity_message_broker.messageReceived(device,response)
+  hbactivity_message_broker.messageReceived(hello_world_driver,device,response)
   --end activity broker hooks
 end
 
