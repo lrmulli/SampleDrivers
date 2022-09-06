@@ -20,24 +20,20 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     for _, d in ipairs(device_list) do
         if d.parent_device_id == device.id then
             --this means that the child device is owned by the device that received the message
-            --log.info("DeviceID: ",d.id)
-            --log.info("Device Parent: ",d.parent_device_id)
-            --log.info("Device Activity:",d.vendor_provided_label)
             if msg.type == "connect.stateDigest?notify" then
                 --d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
-                if (msg.data.activityId == d.vendor_provided_label) then
+                if (msg.data.activityId == d.vendor_provided_label and msg.data.activityStatus==2) then
                     --this means this is a message about this activity for this device
                     log.info("Matching Activity & Device: ",msg.data.activityId)
                     log.info("Activity Status: ",msg.data.activityStatus)
-                    if(msg.data.activityStatus==2) then
-                        --make sure the switch is 'on'
-                        log.info("Switching Activity On")
-                        d:emit_event(capabilities.switch.switch.on())
-                    else
-                        --make sure the switch is 'off'
-                        log.info("Switching Activity Off")
-                        d:emit_event(capabilities.switch.switch.off())
-                    end
+                    
+                    --make sure the switch is 'on'
+                    log.info("Switching Activity On")
+                    d:emit_event(capabilities.switch.switch.on())
+                else
+                    --make sure the switch is 'off'
+                    log.info("Switching Activity Off")
+                    d:emit_event(capabilities.switch.switch.off())
                 end
             end
         end
