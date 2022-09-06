@@ -5,16 +5,17 @@ local json = require "dkjson"
 
 local hbactivity_message_broker = {}
 
-function hbactivity_message_broker.messageReceived(device,msg)
+function hbactivity_message_broker.messageReceived(driver,device,msg)
     if msg.type == "connect.stateDigest?notify" then
-        hbactivity_message_broker.activityMessageReceived(device,msg)
+        hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     end
     if msg.type == "harmony.engine?startActivityFinished" then
-       hbactivity_message_broker.activityMessageReceived(device,msg)
+       hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     end
 end
-function hbactivity_message_broker.activityMessageReceived(device,msg)
+function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     log.info("Activity Message Broker - Received: ",msg)
+    log.info(utils.stringify_table(driver.get_devices(), devices, true))
 end
 
 
