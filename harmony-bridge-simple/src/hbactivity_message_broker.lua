@@ -2,6 +2,7 @@ local log = require "log"
 local capabilities = require "st.capabilities"
 local utils = require "st.utils"
 local json = require "dkjson"
+local logger = capabilities["universevoice35900.log"]
 
 local hbactivity_message_broker = {}
 
