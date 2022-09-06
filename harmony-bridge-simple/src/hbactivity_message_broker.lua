@@ -18,7 +18,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     log.info("Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
     local device_list = driver:get_devices()
     for _, d in ipairs(device_list) do
-        if (d.parent_device_id == device.id and d.harmony-bridge-activity.v1) then
+        if (d.parent_device_id == device.id and d.profile == "harmony-bridge-activity.v1") then
             --this means that the child device is owned by the device that received the message
             if msg.type == "connect.stateDigest?notify" then
                 --d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
