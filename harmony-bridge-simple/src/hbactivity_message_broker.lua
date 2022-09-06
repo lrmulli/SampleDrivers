@@ -15,12 +15,10 @@ function hbactivity_message_broker.messageReceived(driver,device,msg)
 end
 function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     log.info("Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
-    local activityList = device:get_field("activityList")
     local device_list = driver:get_devices()
-    for i, a in pairs(activityList) do
-        log.info("Processing Mesages For - ",a.label," ",a.id)
+    for _, d in ipairs(device_list) do
+        log.info("DeviceID:",d.id)
     end
-    
 end
 
 
