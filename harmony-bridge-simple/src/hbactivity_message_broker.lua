@@ -17,8 +17,9 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     log.info("Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
     local device_list = driver:get_devices()
     for _, d in ipairs(device_list) do
-        log.info("DeviceID:",d.id)
-        log.info("Device Meta:",d.metadata)
+        log.info("DeviceID: ",d.id)
+        log.info("Device Parent: ",d.parent_device_id)
+        log.info("Device Activity:",d.vendor_provided_label)
     end
 end
 
