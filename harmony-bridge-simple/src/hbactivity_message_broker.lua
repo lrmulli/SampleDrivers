@@ -5,20 +5,22 @@ local json = require "dkjson"
 
 local hbactivity_message_broker = {}
 
-function hbactivity_message_broker.messageReceived(driver,device,msg)
+function hbactivity_message_broker.messageReceived(device,msg)
     if msg.type == "connect.stateDigest?notify" then
-        hbactivity_message_broker.activityMessageReceived(driver,device,msg)
+        hbactivity_message_broker.activityMessageReceived(device,msg)
     end
     if msg.type == "harmony.engine?startActivityFinished" then
-       hbactivity_message_broker.activityMessageReceived(driver,device,msg)
+       hbactivity_message_broker.activityMessageReceived(device,msg)
     end
 end
-function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
+function hbactivity_message_broker.activityMessageReceived(device,msg)
     log.info("Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
-    --local deviceList = driver:get_devices()
-    --log.info(utils.stringify_table(utils.stringify_table(deviceList,"device: ",true), "Devices: ", true))
     local activityList = device:get_field("activityList")
-    log.info(utils.stringify_table(utils.stringify_table(activityList,"activities: ",true), "Devices: ", true))
+    local device_list = hello_world_driver:get_devices()
+    for i, a in pairs(activityList) do
+        log.info("Processing Mesages For - ",a.label," ",a.id)
+    end
+    
 end
 
 
