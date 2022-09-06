@@ -29,7 +29,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                     --this means this is a message about this activity for this device
                     log.info("Matching Activity & Device: ",msg.data.activityId)
                     log.info("Activity Status: ",msg.data.activityStatus)
-                    if(msg.data.activityStatus=="2") then
+                    if(msg.data.activityStatus==2) then
                         --make sure the switch is 'on'
                         log.info("Switching Activity On")
                         d:emit_event(capabilities.switch.switch.on())
