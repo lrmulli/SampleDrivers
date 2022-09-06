@@ -15,7 +15,7 @@ function hbactivity_message_broker.messageReceived(driver,device,msg)
 end
 function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     log.info("Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
-    log.info(utils.stringify_table(driver.get_devices(), "Devices: ", true))
+    log.info(utils.stringify_table(utils.stringify_table(driver,"Driver: ",true), "Devices: ", true))
 end
 
 
