@@ -27,11 +27,15 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                 d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
                 if (msg.data.activityId == d.vendor_provided_label) then
                     --this means this is a message about this activity for this device
+                    log.info("Matching Activity & Device: ",msg.data.activityId)
+                    log.info("Activity Status: ",msg.data.activityStatus)
                     if(msg.data.activityStatus=="2") then
                         --make sure the switch is 'on'
+                        log.info("Switching Activity On")
                         d:emit_event(capabilities.switch.switch.on())
                     else
                         --make sure the switch is 'off'
+                        log.info("Switching Activity Off")
                         d:emit_event(capabilities.switch.switch.off())
                     end
                 end
