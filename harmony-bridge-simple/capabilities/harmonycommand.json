@@ -9,7 +9,7 @@
               "properties": {
                   "value": {
                       "type": "string",
-                      "maxLength": 5000
+                      "maxLength": 999
                   }
               },
               "additionalProperties": false,
@@ -30,7 +30,7 @@
                   "optional": false,
                   "schema": {
                       "type": "string",
-                      "maxLength": 5000
+                      "maxLength": 999
                   }
               }
           ]
