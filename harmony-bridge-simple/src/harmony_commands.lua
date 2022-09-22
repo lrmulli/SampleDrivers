@@ -22,10 +22,13 @@ end
 function harmony_commands.handleHarmonyCommand(device,commandString)
   log.debug("Command String: "..commandString)
   local req = json.decode(commandString)
-  log.debug(utils.stringify_table(req))
+  
   if harmony_commands.is_array(req) then
     log.debug("This is an array of commands")
-    for i,v in ipairs(req) do harmony_commands.handleIndividualHarmonyCommand(device,req) end
+    for _, r in ipairs(req) do
+      log.debug(utils.stringify_table(req))
+      harmony_commands.handleIndividualHarmonyCommand(device,r)
+    end
   else
     harmony_commands.handleIndividualHarmonyCommand(device,req)
   end
