@@ -38,7 +38,6 @@ preferences:
     preferenceType: string
     definition:
       minLength: 7
-      maxLength: 2500
       stringType: paragraph
       default: "{put your harmony command here}"
   - title: "Additional Harmony Identifier"
