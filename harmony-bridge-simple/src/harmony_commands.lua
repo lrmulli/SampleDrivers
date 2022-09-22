@@ -10,8 +10,8 @@ function harmony_commands.pushRelease(device,req)
   if req.action == "press" then
     local starttime = 0
     local how_many_times =1
-    if req.repeat ~= nil then
-      how_many_times = req.repeat
+    if req.replay ~= nil then
+      how_many_times = req.replay
     end
     for i=1, how_many_times do
       sendHarmonyCommand(device,req.deviceId,req.command,req.action,starttime)
