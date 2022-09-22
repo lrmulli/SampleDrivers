@@ -29,7 +29,8 @@
                   "name": "value",
                   "optional": false,
                   "schema": {
-                      "type": "string"
+                      "type": "string",
+                      "maxLength": 5000
                   }
               }
           ]
