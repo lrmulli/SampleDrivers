@@ -15,7 +15,8 @@ function harmony_commands.pushRelease(device,req)
     end
     for i=1, how_many_times do
       sendHarmonyCommand(device,req.deviceId,req.command,req.action,starttime)
-      sendHarmonyCommand(device,req.deviceId,req.command,"release",(starttime+100))
+      starttime = starttime + 100
+      sendHarmonyCommand(device,req.deviceId,req.command,"release",(starttime))
       starttime = starttime + 100
     end
   end
