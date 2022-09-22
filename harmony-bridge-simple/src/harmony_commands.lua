@@ -8,8 +8,16 @@ local harmony_commands = {}
 -- harmony commands
 function harmony_commands.pushRelease(device,req)
   if req.action == "press" then
-    sendHarmonyCommand(device,req.deviceId,req.command,req.action,0)
-    sendHarmonyCommand(device,req.deviceId,req.command,"release",100)
+    local starttime = 0
+    local how_many_times =1
+    if req.repeat ~= nil then
+      how_many_times = req.repeat
+    end
+    for i=1, how_many_times do
+      sendHarmonyCommand(device,req.deviceId,req.command,req.action,starttime)
+      sendHarmonyCommand(device,req.deviceId,req.command,"release",(starttime+100))
+      starttime = starttime + 100
+    end
   end
   
 end
