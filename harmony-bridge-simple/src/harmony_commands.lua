@@ -23,11 +23,28 @@ function harmony_commands.handleHarmonyCommand(device,commandString)
   log.debug("Command String: "..commandString)
   local req = json.decode(commandString)
   log.debug(utils.stringify_table(req))
+  if harmony_commands.is_array(req) then
+    log.debug("This is an array of commands")
+    for i,v in ipairs(req) do harmony_commands.handleIndividualHarmonyCommand(device,req) end
+  else then
+    harmony_commands.handleIndividualHarmonyCommand(device,req)
+  end
+end
+function harmony_commands.handleIndividualHarmonyCommand(device,req)
   if req.action == "press" then
     harmony_commands.pushRelease(device,req)
   elseif req.action == "startActivity" then
     harmony_commands.startActivity(device,req)
   end
+end
+
+function harmony_commands.is_array(t)
+  local i = 0
+  for _ in pairs(t) do
+      i = i + 1
+      if t[i] == nil then return false end
+  end
+  return true
 end
 
 return harmony_commands
