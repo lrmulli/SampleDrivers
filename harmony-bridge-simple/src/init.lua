@@ -98,11 +98,16 @@ local function device_info_changed(driver, device, event, args)
         for i, a in pairs(activityList) do
           log.info("Creating Activity Device for - ",a.label)
           --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
+          local dni = "harmony_bridge_activity_"..a.id
+          if(a.id == "-1") then
+            --this is the poweroff activity
+            dni = "harmony_bridge_"..hubId.."_activity_"..a.id
+          end
           local metadata = {
             type = "LAN",
             -- the DNI must be unique across your hub, using static ID here so that we
             -- only ever have a single instance of this "device"
-            device_network_id = "harmony_bridge_"..hubId.."_activity_"..a.id,
+            device_network_id = dni,
             label = "HB "..hubId.." Activity - "..a.label,
             profile = "harmony-bridge-activity.v1",
             manufacturer = "HBActivity",
