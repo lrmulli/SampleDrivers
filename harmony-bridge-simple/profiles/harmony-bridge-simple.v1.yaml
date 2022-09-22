@@ -38,7 +38,7 @@ preferences:
     preferenceType: string
     definition:
       minLength: 7
-      stringType: text
+      stringType: paragraph
       default: "{put your harmony command here}"
   - title: "Additional Harmony Identifier"
     name: deviceid
