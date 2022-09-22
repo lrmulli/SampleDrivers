@@ -8,7 +8,8 @@
               "type": "object",
               "properties": {
                   "value": {
-                      "type": "string"
+                      "type": "string",
+                      "maxLength": 5000
                   }
               },
               "additionalProperties": false,
@@ -28,7 +29,8 @@
                   "name": "value",
                   "optional": false,
                   "schema": {
-                      "type": "string"
+                      "type": "string",
+                      "maxLength": 5000
                   }
               }
           ]
