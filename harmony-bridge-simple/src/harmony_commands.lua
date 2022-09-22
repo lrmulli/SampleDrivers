@@ -26,7 +26,7 @@ function harmony_commands.handleHarmonyCommand(device,commandString)
   if harmony_commands.is_array(req) then
     log.debug("This is an array of commands")
     for _, r in ipairs(req) do
-      log.debug(utils.stringify_table(req))
+      log.debug(utils.stringify_table(r))
       harmony_commands.handleIndividualHarmonyCommand(device,r)
     end
   else
