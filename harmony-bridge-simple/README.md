@@ -1,4 +1,3 @@
-# Hello World Example
+# Harmony Bridge Simple
 
-This example is used in the [Get Started with SmartThings Edge](https://developer-preview.smartthings.com/docs/devices/hub-connected/get-started)
-guide.
+A smartthings driver for the Harmony Bridge - Read all about it here https://community.smartthings.com/t/edge-device-simple-harmony-bridge-alpha-testing/237389?u=lmullineux
