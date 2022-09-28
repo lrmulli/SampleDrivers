@@ -13,6 +13,9 @@ function hbactivity_message_broker.messageReceived(driver,device,msg)
     if msg.type == "harmony.engine?startActivityFinished" then
        hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     end
+    if msg.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?getCurrentActivity" and msg.code == 200 then
+        hbactivity_message_broker.activityMessageReceived(driver,device,msg)
+     end
 end
 function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
     log.info("Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
