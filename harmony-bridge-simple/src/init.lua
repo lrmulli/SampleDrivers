@@ -276,6 +276,13 @@ function sendHarmonyCommand(device,deviceId,command,action,time)
   print(payload)
   local ok,close_was_clean,close_code,close_reason = ws:send(payload)
   print(ok,close_was_clean,close_code,close_reason)
+  if close_code == "1006" then
+    log.debug("Attempting to reconnect")
+    ws_connect(device)   -- Reconnect on error
+    log.debug("Re-trying message send")
+    local ok,close_was_clean,close_code,close_reason = ws:send(payload)
+    print(ok,close_was_clean,close_code,close_reason)
+  end
   if (device.preferences.verboserecdlog == true) then
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
   end
@@ -302,6 +309,13 @@ function sendHarmonyStartActivity(device,activityId,time)
   print(payload)
   local ok,close_was_clean,close_code,close_reason = ws:send(payload)
   print(ok,close_was_clean,close_code,close_reason)
+  if close_code == "1006" then
+    log.debug("Attempting to reconnect")
+    ws_connect(device)   -- Reconnect on error
+    log.debug("Re-trying message send")
+    local ok,close_was_clean,close_code,close_reason = ws:send(payload)
+    print(ok,close_was_clean,close_code,close_reason)
+  end
   if (device.preferences.verboserecdlog == true) then
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
   end
