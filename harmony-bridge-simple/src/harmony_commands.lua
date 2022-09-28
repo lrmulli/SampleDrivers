@@ -28,6 +28,12 @@ function harmony_commands.startActivity(device,req)
     sendHarmonyStartActivity(device,req.activityId,0)
   end
 end
+function harmony_commands.getCurrentActivity(device,req)
+  log.info("Getting Current Activity")
+  if req.action == "getCurrentActivity" then
+    sendHarmonyGetCurrentActivity(device,0)
+  end
+end
 function harmony_commands.handleHarmonyCommand(device,commandString)
   log.debug("Command String: "..commandString)
   local req = json.decode(commandString)
@@ -46,6 +52,8 @@ function harmony_commands.handleIndividualHarmonyCommand(device,req)
   if req.action == "press" then
     harmony_commands.pushRelease(device,req)
   elseif req.action == "startActivity" then
+    harmony_commands.startActivity(device,req)
+  elseif req.action == "getCurrentActivity" then
     harmony_commands.startActivity(device,req)
   end
 end

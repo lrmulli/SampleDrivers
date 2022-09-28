@@ -320,6 +320,34 @@ function sendHarmonyStartActivity(device,activityId,time)
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
   end
 end
+function sendHarmonyGetCurrentActivity(device,time)
+  local ws = device:get_field("ws")
+  local hubId = device:get_field("harmony_hub_id")
+  local payload = [[{
+    "hubId": "]]..hubId..[[",
+    "timeout": 60,
+    "hbus": {
+      "cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?getCurrentActivity",
+      "id": "0",
+      "params": {
+        "verb": "get"
+        }
+      }
+    }]]
+  print(payload)
+  local ok,close_was_clean,close_code,close_reason = ws:send(payload)
+  print(ok,close_was_clean,close_code,close_reason)
+  if close_code == "1006" then
+    log.debug("Attempting to reconnect")
+    ws_connect(device)   -- Reconnect on error
+    log.debug("Re-trying message send")
+    local ok,close_was_clean,close_code,close_reason = ws:send(payload)
+    print(ok,close_was_clean,close_code,close_reason)
+  end
+  if (device.preferences.verboserecdlog == true) then
+    device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
+  end
+end
 
 --End Harmony Websockets
 --Harmony HTTP
