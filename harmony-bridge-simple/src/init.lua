@@ -47,6 +47,7 @@ local function device_init(driver, device)
       getHarmonyHubId(device,ipAddress)
       --connect_ws_harmony(device)
       device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
+      driver:call_on_schedule(60, function () poll(driver,device) end, 'POLLING')
     end
   end
   if(device:component_exists("activitylogger")) then --this means that it is activity device
@@ -386,6 +387,14 @@ function connect_ws_harmony(device)
   hello_world_driver:call_with_delay(1, function ()
     ws_connect(device)
   end, 'WS START TIMER')
+end
+
+function poll(driver,device)
+  log.info("Polling for activity updates")
+  if device.preferences.deviceaddr ~= "192.168.1.n" then
+    --we have an ip address
+    sendHarmonyGetCurrentActivity(device,0)
+  end
 end
 
 -- run the driver
