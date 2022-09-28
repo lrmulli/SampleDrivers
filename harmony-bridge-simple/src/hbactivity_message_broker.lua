@@ -35,7 +35,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                     log.info("Switching Activity Off")
                     d:emit_event(capabilities.switch.switch.off())
                 end
-            else if msg.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?getCurrentActivity" then
+            elseif msg.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?getCurrentActivity" then
                 if (msg.data.result == d.vendor_provided_label) then
                     log.info("Matching Activity & Device: ",msg.data.result)
                     log.info("Switching Activity On")
