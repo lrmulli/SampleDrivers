@@ -54,7 +54,7 @@ function harmony_commands.handleIndividualHarmonyCommand(device,req)
   elseif req.action == "startActivity" then
     harmony_commands.startActivity(device,req)
   elseif req.action == "getCurrentActivity" then
-    harmony_commands.startActivity(device,req)
+    harmony_commands.getCurrentActivity(device,req)
   end
 end
 
