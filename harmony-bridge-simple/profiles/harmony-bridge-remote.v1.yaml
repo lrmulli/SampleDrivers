@@ -1,11 +1,14 @@
-# harmony-bridge-activity
+# harmony-bridge-remote
 name: harmony-bridge-remote.v1
 components:
 - id: main
-  label: ActivityStatus
+  label: RemoteStatus
   capabilities:
   - id: switch
     version: 1
+- id: remotecontrol
+  label: remotecontrol
+  capabilities:
   - id: samsungTV
     version: 1
 - id: remotelogger
