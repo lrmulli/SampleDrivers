@@ -13,7 +13,7 @@ end
 function command_handlers.push(driver, device, command)
   log.info("test button pushed");
   if device.preferences.buttoncommand ~= "" and device.preferences.buttoncommand ~= "{put your harmony command here}" then
-    harmony_commands.handleHarmonyCommand(device,device.preferences.buttoncommand)
+    harmony_commands.handleHarmonyCommand(driver,device,device.preferences.buttoncommand)
   end
 end
 
