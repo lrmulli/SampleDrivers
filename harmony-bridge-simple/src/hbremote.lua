@@ -12,7 +12,10 @@ NAME = "HBRemoteHandler",
     [capabilities.switch.ID] = {
         [capabilities.switch.commands.on.NAME] = hbremote_command_handlers.switch_on,
         [capabilities.switch.commands.off.NAME] = hbremote_command_handlers.switch_off,
-        }
+        },
+    [capabilities.keypadInput.ID] = {
+          [capabilities.keypadInput.commands.sendKey.NAME] = hbremote_command_handlers.keyPress,
+          },
     },
   can_handle = function(opts, driver, device, ...)
     return device:component_exists("remotelogger")
