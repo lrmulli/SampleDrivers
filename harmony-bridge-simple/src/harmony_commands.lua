@@ -34,7 +34,7 @@ function harmony_commands.getCurrentActivity(device,req)
     sendHarmonyGetCurrentActivity(device,0)
   end
 end
-function harmony_commands.handleHarmonyCommand(device,commandString)
+function harmony_commands.handleHarmonyCommand(driver,device,commandString)
   log.debug("Command String: "..commandString)
   local req = json.decode(commandString)
   
@@ -42,13 +42,13 @@ function harmony_commands.handleHarmonyCommand(device,commandString)
     log.debug("This is an array of commands")
     for _, r in ipairs(req) do
       log.debug(utils.stringify_table(r))
-      harmony_commands.handleIndividualHarmonyCommand(device,r)
+      harmony_commands.handleIndividualHarmonyCommand(driver,device,r)
     end
   else
-    harmony_commands.handleIndividualHarmonyCommand(device,req)
+    harmony_commands.handleIndividualHarmonyCommand(driver,device,req)
   end
 end
-function harmony_commands.handleIndividualHarmonyCommand(device,req)
+function harmony_commands.handleIndividualHarmonyCommand(driver,device,req)
   if req.action == "press" then
     harmony_commands.pushRelease(device,req)
   elseif req.action == "startActivity" then
@@ -56,7 +56,7 @@ function harmony_commands.handleIndividualHarmonyCommand(device,req)
   elseif req.action == "getCurrentActivity" then
     harmony_commands.getCurrentActivity(device,req)
   elseif req.action == "createDeviceRemote" then
-    harmony_commands.createDeviceRemote(device,req)
+    harmony_commands.createDeviceRemote(driver,device,req)
   end
 end
 
@@ -69,7 +69,7 @@ function harmony_commands.is_array(t)
   return true
 end
 
-function harmony_commands.createDeviceRemote(device,req)
+function harmony_commands.createDeviceRemote(driver,device,req)
   log.info("Creating Device Remote")
   if req.action == "createDeviceRemote" then
     local harmony_device_id = req.deviceId

@@ -8,7 +8,7 @@ local command_handlers = {}
 -- callback to handle an `on` capability command
 function command_handlers.harmonycommand(driver, device, command)
   log.debug("Execute Command---"..command.args.value)
-  harmony_commands.handleHarmonyCommand(device,command.args.value)
+  harmony_commands.handleHarmonyCommand(driver,device,command.args.value)
 end
 function command_handlers.push(driver, device, command)
   log.info("test button pushed");
