@@ -5,8 +5,6 @@ components:
   capabilities:
   - id: keypadInput
     version: 1
-  - id: samsungTV
-    version: 1
 - id: remotelogger
   label: remotelogger
   capabilities:
