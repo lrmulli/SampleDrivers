@@ -2,7 +2,6 @@
 name: harmony-bridge-remote.v1
 components:
 - id: main
-  label: RemoteStatus
   capabilities:
   - id: keypadInput
     version: 1
