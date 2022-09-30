@@ -6,10 +6,9 @@ components:
   capabilities:
   - id: switch
     version: 1
-- id: remotecontrol
-  label: remotecontrol
-  capabilities:
   - id: keypadInput
+    version: 1
+  - id: samsungTV
     version: 1
 - id: remotelogger
   label: remotelogger
