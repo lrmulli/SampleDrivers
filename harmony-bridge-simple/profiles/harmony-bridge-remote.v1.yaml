@@ -4,8 +4,6 @@ components:
 - id: main
   label: RemoteStatus
   capabilities:
-  - id: switch
-    version: 1
   - id: keypadInput
     version: 1
   - id: samsungTV
