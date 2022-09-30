@@ -55,6 +55,8 @@ function harmony_commands.handleIndividualHarmonyCommand(device,req)
     harmony_commands.startActivity(device,req)
   elseif req.action == "getCurrentActivity" then
     harmony_commands.getCurrentActivity(device,req)
+  elseif req.action == "createDeviceRemote" then
+    harmony_commands.createDeviceRemote(device,req)
   end
 end
 
@@ -65,6 +67,27 @@ function harmony_commands.is_array(t)
       if t[i] == nil then return false end
   end
   return true
+end
+
+function harmony_commands.createDeviceRemote(device,req)
+  log.info("Creating Device Remote")
+  if req.action == "createDeviceRemote" then
+    local harmony_device_id = req.deviceId
+    local dni = "harmony_remote_device_"..harmony_device_id
+    local metadata = {
+      type = "LAN",
+      -- the DNI must be unique across your hub, using static ID here so that we
+      -- only ever have a single instance of this "device"
+      device_network_id = dni,
+      label = "HB Device Remote - "..req.deviceId,
+      profile = "harmony-bridge-remote.v1",
+      manufacturer = "HBRemote",
+      model = "HBRemote",
+      vendor_provided_label = harmony_device_id,
+      parent_device_id = device.id
+    }
+    driver:try_create_device(metadata)
+  end
 end
 
 return harmony_commands

@@ -53,6 +53,9 @@ local function device_init(driver, device)
   if(device:component_exists("activitylogger")) then --this means that it is activity device
     device:emit_event(capabilities.switch.switch.off())
   end
+  if(device:component_exists("remotelogger")) then --this means that it is remote device
+    device:emit_event(capabilities.switch.switch.off())
+  end
 end
 
 local function device_info_changed(driver, device, event, args)
@@ -154,7 +157,7 @@ local hello_world_driver = Driver("harmony-bridge-simple.v1", {
       [capabilities.momentary.commands.push.NAME] = command_handlers.push,
     },
   },
-  sub_drivers = { require("hbactivity")}
+  sub_drivers = { require("hbactivity"),require("hbremote")}
 })
 
 --Harmony Websockets

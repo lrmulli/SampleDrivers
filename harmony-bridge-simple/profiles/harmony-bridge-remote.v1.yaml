@@ -1,0 +1,20 @@
+# harmony-bridge-activity
+name: harmony-bridge-remote.v1
+components:
+- id: main
+  label: ActivityStatus
+  capabilities:
+  - id: switch
+    version: 1
+  - id: samsungTV
+    version: 1
+- id: remotelogger
+  label: remotelogger
+  capabilities:
+  - id: universevoice35900.log
+    version: 1
+  categories:
+  - name: RemoteController
+metadata:
+  mnmn: SmartThingsCommunity
+  ocfDeviceType: x.com.st.d.remotecontroller
