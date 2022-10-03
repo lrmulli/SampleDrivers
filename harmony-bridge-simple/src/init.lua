@@ -47,7 +47,7 @@ local function device_init(driver, device)
       getHarmonyHubId(device,ipAddress)
       --connect_ws_harmony(device)
       device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
-      driver:call_on_schedule(60, function () poll(driver,device) end, 'POLLING')
+      driver:call_on_schedule(60, function () poll(driver,device) end, 'POLLING - '..device.id)
     end
   end
   if(device:component_exists("activitylogger")) then --this means that it is activity device
