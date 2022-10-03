@@ -390,9 +390,9 @@ function connect_ws_harmony(device)
 end
 
 function poll(driver,device)
-  log.info("Polling for activity updates")
   if device.preferences.deviceaddr ~= "192.168.1.n" then
     --we have an ip address
+    log.info("Polling for activity updates - ",device.id)
     sendHarmonyGetCurrentActivity(device,0)
   end
 end
