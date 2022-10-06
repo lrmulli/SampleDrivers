@@ -23,23 +23,23 @@ function harmony_commands.pushRelease(device,req)
   
 end
 function harmony_commands.startActivity(device,req)
-  log.info("Starting Activity")
+  log.info("[" .. device.id .. "] Starting Activity")
   if req.action == "startActivity" then
     sendHarmonyStartActivity(device,req.activityId,0)
   end
 end
 function harmony_commands.getCurrentActivity(device,req)
-  log.info("Getting Current Activity")
+  log.info("[" .. device.id .. "] Getting Current Activity")
   if req.action == "getCurrentActivity" then
     sendHarmonyGetCurrentActivity(device,0)
   end
 end
 function harmony_commands.handleHarmonyCommand(device,commandString)
-  log.debug("Command String: "..commandString)
+  log.debug("[" .. device.id .. "] Command String: "..commandString)
   local req = json.decode(commandString)
   
   if harmony_commands.is_array(req) then
-    log.debug("This is an array of commands")
+    log.debug("[" .. device.id .. "] This is an array of commands")
     for _, r in ipairs(req) do
       log.debug(utils.stringify_table(r))
       harmony_commands.handleIndividualHarmonyCommand(device,r)
