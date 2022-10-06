@@ -280,6 +280,7 @@ function sendHarmonyCommand(device,deviceId,command,action,time)
   if close_reason then
     log.debug("[" .. device.id .. "] Attempting to reconnect")
     ws_connect(device)   -- Reconnect on error
+    ws = device:get_field("ws")
     log.debug("[" .. device.id .. "] Re-trying message send")
     local ok,close_was_clean,close_code,close_reason = ws:send(payload)
     print(ok,close_was_clean,close_code,close_reason)
@@ -313,6 +314,7 @@ function sendHarmonyStartActivity(device,activityId,time)
   if close_reason then
     log.debug("[" .. device.id .. "] Attempting to reconnect")
     ws_connect(device)   -- Reconnect on error
+    ws = device:get_field("ws")
     log.debug("[" .. device.id .. "] Re-trying message send")
     local ok,close_was_clean,close_code,close_reason = ws:send(payload)
     print(ok,close_was_clean,close_code,close_reason)
@@ -341,6 +343,7 @@ function sendHarmonyGetCurrentActivity(device,time)
   if close_reason then
     log.debug("[" .. device.id .. "] Attempting to reconnect after closuer code: "..close_code)
     ws_connect(device)   -- Reconnect on error
+    ws = device:get_field("ws")
     log.debug("[" .. device.id .. "] Re-trying message send")
     local ok,close_was_clean,close_code,close_reason = ws:send(payload)
     print(ok,close_was_clean,close_code,close_reason)
