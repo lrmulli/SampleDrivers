@@ -28,7 +28,7 @@ function hbactivity_command_handlers.getParentDevice(driver,device)
             dev = d
         end
     end
-    log.info("Returning Parent: ",dev.id)
+    log.info("[" .. device.id .. "] Returning Parent: ",dev.id)
     return dev
 end
 return hbactivity_command_handlers

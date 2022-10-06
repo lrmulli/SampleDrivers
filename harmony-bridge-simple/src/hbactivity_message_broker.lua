@@ -18,7 +18,7 @@ function hbactivity_message_broker.messageReceived(driver,device,msg)
      end
 end
 function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
-    log.info("Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
+    log.info("[" .. device.id .. "] Activity Message Broker - Received: ",utils.stringify_table(msg,"Activity Message: ",true))
     local device_list = driver:get_devices()
     for _, d in ipairs(device_list) do
         if (d.parent_device_id == device.id and d:component_exists("activitylogger")) then

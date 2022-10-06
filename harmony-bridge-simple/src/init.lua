@@ -64,17 +64,17 @@ local function device_info_changed(driver, device, event, args)
       end
     end
     if args.old_st_store.preferences.deviceaddr ~= device.preferences.deviceaddr then
-      log.info("IP Address Changed"..device.preferences.deviceaddr)
+      log.info(" [" .. device.id .. "] IP Address Changed"..device.preferences.deviceaddr)
       ipAddress = device.preferences.deviceaddr
       device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
-      log.info("stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
+      log.info(" [" .. device.id .. "] stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
       getHarmonyHubId(device,ipAddress)
-      log.info("stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
+      log.info(" [" .. device.id .. "] stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
       connect_ws_harmony(device)
     end
     --check for deviceid changes
     if args.old_st_store.preferences.deviceid ~= device.preferences.deviceid then
-      log.info("Additional Device Id field changed - "..device.preferences.deviceid)
+      log.info(" [" .. device.id .. "] Additional Device Id field changed - "..device.preferences.deviceid)
       if (device.preferences.deviceid ~= "1") then
         local did = device.preferences.deviceid
         local metadata = {
@@ -92,12 +92,12 @@ local function device_info_changed(driver, device, event, args)
       end
     end
     if args.old_st_store.preferences.activitydevices ~= device.preferences.activitydevices then
-      log.info("Activity Devices setting changed")
+      log.info("[" .. device.id .. "] Activity Devices setting changed")
       local hubId = device:get_field("harmony_hub_id")
       if (device.preferences.activitydevices == true) then
         local activityList = device:get_field("activityList")
         for i, a in pairs(activityList) do
-          log.info("Creating Activity Device for - ",a.label)
+          log.info("[" .. device.id .. "] Creating Activity Device for - ",a.label)
           --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
           local dni = "harmony_bridge_activity_"..a.id
           if(a.id == "-1") then
@@ -172,27 +172,27 @@ function ws_connect(device)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   if ipAddress ~= "" and hubId ~= ""  then
-    log.info("Configured IP Address is : "..ipAddress)
+    log.info("[" .. device.id .. "] Configured IP Address is : "..ipAddress)
     local hub_url = "ws://"..ipAddress..":8088/?domain=svcs.myharmony.com&hubId="..hubId
-    log.debug("WS_CONNECT - Connecting")
+    log.debug("[" .. device.id .. "] WS_CONNECT - Connecting")
     local r, code, _, sock = ws:connect(hub_url,"echo", params)
     print('WS_CONNECT - STATUS', r, code)
   
     device:set_field("ws",ws)
     if r then
-      log.debug("Registering Channel Handler")
+      log.debug("[" .. device.id .. "] Registering Channel Handler")
       log.debug()
       hello_world_driver:register_channel_handler(ws.sock, function ()
         my_ws_tick(device)
       end,"SocketChannelHandler"..device.id)
-      log.debug("Registering Channel Handler Code finished")
+      log.debug("[" .. device.id .. "] Registering Channel Handler Code finished")
       device:set_field("ws",ws)
     end
     if (device.preferences.configonconnect == true) then
       getConfig(device)
     end
   else
-    log.info("Check IP Address Configuration")
+    log.info("[" .. device.id .. "] Check IP Address Configuration")
   end
 end
 function my_ws_tick(device)
@@ -206,7 +206,7 @@ function my_ws_tick(device)
     device:emit_event(logger.logger("Opcode: "..(opcode or "")))
     device:emit_event(logger.logger("Error: "..(err or "")))
     device:emit_event(logger.logger("Payload Recd: "..(payload or "")))
-    log.debug("Payload Recd: "..(payload or ""))
+    log.debug("[" .. device.id .. "] Payload Recd: "..(payload or ""))
   end
   if opcode == 9.0 then  -- PING 
     print('SEND PONG:', ws:send(payload, 10)) -- Send PONG
@@ -278,9 +278,9 @@ function sendHarmonyCommand(device,deviceId,command,action,time)
   local ok,close_was_clean,close_code,close_reason = ws:send(payload)
   print(ok,close_was_clean,close_code,close_reason)
   if close_code == 1006 then
-    log.debug("Attempting to reconnect")
+    log.debug("[" .. device.id .. "] Attempting to reconnect")
     ws_connect(device)   -- Reconnect on error
-    log.debug("Re-trying message send")
+    log.debug("[" .. device.id .. "] Re-trying message send")
     local ok,close_was_clean,close_code,close_reason = ws:send(payload)
     print(ok,close_was_clean,close_code,close_reason)
   end
@@ -311,9 +311,9 @@ function sendHarmonyStartActivity(device,activityId,time)
   local ok,close_was_clean,close_code,close_reason = ws:send(payload)
   print(ok,close_was_clean,close_code,close_reason)
   if close_code == 1006 then
-    log.debug("Attempting to reconnect")
+    log.debug("[" .. device.id .. "] Attempting to reconnect")
     ws_connect(device)   -- Reconnect on error
-    log.debug("Re-trying message send")
+    log.debug("[" .. device.id .. "] Re-trying message send")
     local ok,close_was_clean,close_code,close_reason = ws:send(payload)
     print(ok,close_was_clean,close_code,close_reason)
   end
@@ -339,9 +339,9 @@ function sendHarmonyGetCurrentActivity(device,time)
   local ok,close_was_clean,close_code,close_reason = ws:send(payload)
   print(ok,close_was_clean,close_code,close_reason)
   if close_code == 1006 then
-    log.debug("Attempting to reconnect")
+    log.debug("[" .. device.id .. "] Attempting to reconnect")
     ws_connect(device)   -- Reconnect on error
-    log.debug("Re-trying message send")
+    log.debug("[" .. device.id .. "] Re-trying message send")
     local ok,close_was_clean,close_code,close_reason = ws:send(payload)
     print(ok,close_was_clean,close_code,close_reason)
   end
@@ -353,11 +353,11 @@ end
 --End Harmony Websockets
 --Harmony HTTP
 function getHarmonyHubId(device,ipAddress)
-  log.info("Attempting to get hubID for ipAddress "..ipAddress)
+  log.info("[" .. device.id .. "] Attempting to get hubID for ipAddress "..ipAddress)
   local reqbody = [[{"id":124,"cmd":"setup.account?getProvisionInfo","timeout":90000}]]
   local respbody = {} -- for the response body
   http.TIMEOUT = 50;
-  log.info("Sending request...")
+  log.info("[" .. device.id .. "] Sending request...")
 
   local result, respcode, respheaders, respstatus = http.request {
     method = "POST",
@@ -373,7 +373,7 @@ function getHarmonyHubId(device,ipAddress)
     }
   -- get body as string by concatenating table filled by sink
   respbody = table.concat(respbody)
-  log.debug("Response Body "..respbody)
+  log.debug("[" .. device.id .. "] Response Body :"..respbody)
   print(result,respcode,respstatus)
   local resp = json.decode(respbody)
   print(resp.data.activeRemoteId)
@@ -383,7 +383,7 @@ end
 function connect_ws_harmony(device)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
-  log.info("connecting over websockets ip: "..ipAddress.."HubId: "..hubId)
+  log.info("[" .. device.id .. "] connecting over websockets ip: "..ipAddress.."HubId: "..hubId)
   hello_world_driver:call_with_delay(1, function ()
     ws_connect(device)
   end, 'WS START TIMER')
@@ -392,7 +392,7 @@ end
 function poll(driver,device)
   if device.preferences.deviceaddr ~= "192.168.1.n" then
     --we have an ip address
-    log.info("Polling for activity updates - ",device.id)
+    log.info("[" .. device.id .. "] Polling for activity updates - ",device.id)
     sendHarmonyGetCurrentActivity(device,0)
   end
 end
