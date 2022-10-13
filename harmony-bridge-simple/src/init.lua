@@ -48,8 +48,8 @@ local function device_init(driver, device)
       --connect_ws_harmony(device)
       device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
     end
-    device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Initialising")))
-    device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Setting up current activity poll")))
+    device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Initialising"))
+    device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Setting up current activity poll"))
     driver:call_on_schedule(60, function () poll(driver,device) end, 'POLLING - '..device.id)
   end
   if(device:component_exists("activitylogger")) then --this means that it is activity device
