@@ -12,6 +12,7 @@ local json = require "dkjson"
 local cosock = require "cosock"
 local http = cosock.asyncify "socket.http"
 ltn12 = require("ltn12")
+local base64 = require 'st.base64'
 
 
 -- Custom capabilities
