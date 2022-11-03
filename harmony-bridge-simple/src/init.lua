@@ -72,7 +72,8 @@ local function device_info_changed(driver, device, event, args)
       log.info(" [" .. device.id .. "] stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
       getHarmonyHubId(device,ipAddress)
       log.info(" [" .. device.id .. "] stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
-      connect_ws_harmony(device)
+      --connect_ws_harmony(device)
+      device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
     end
     --check for deviceid changes
     if args.old_st_store.preferences.deviceid ~= device.preferences.deviceid then
