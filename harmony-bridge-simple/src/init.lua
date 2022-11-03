@@ -6,6 +6,7 @@ local log = require "log"
 local bit = require 'bitop.funcs'
 local socket = require'socket'
 --local ws = require('websocket.client').sync({ timeout = 30 })
+local lustre = require "lustre"
 local json = require "dkjson"
 --local http = require('socket.http')
 local cosock = require "cosock"
@@ -169,7 +170,7 @@ local params = {
 
 
 function ws_connect(device)
-  local ws = require('websocket.client').sync({ timeout = 30 })
+  --local ws = require('websocket.client').sync({ timeout = 30 })
   device:set_field("ws",ws)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
@@ -177,8 +178,9 @@ function ws_connect(device)
     log.info("[" .. device.id .. "] Configured IP Address is : "..ipAddress)
     local hub_url = "ws://"..ipAddress..":8088/?domain=svcs.myharmony.com&hubId="..hubId
     log.debug("[" .. device.id .. "] WS_CONNECT - Connecting")
-    local r, code, _, sock = ws:connect(hub_url,"echo", params)
-    print('WS_CONNECT - STATUS', r, code)
+    local ws = lustre.Websocket.client(assert(cosock.socket.tcp()), hub_url, lustre.Config.default())
+    local r, code, _, sock = ws:connect(hub_url)
+    --print('WS_CONNECT - STATUS', r, code)
   
     device:set_field("ws",ws)
     if r then
