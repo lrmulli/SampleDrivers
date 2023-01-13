@@ -12,6 +12,7 @@ local MAX_RECONNECT_ATTEMPTS = 10
 local RECONNECT_PERIOD = 120 -- 2 min
 local logger = capabilities["universevoice35900.log"]
 local json = require "dkjson"
+local hbactivity_message_broker = require "hbactivity_message_broker"
 local Listener = {}
 Listener.__index = Listener
 Listener.WS_PORT = 8088
