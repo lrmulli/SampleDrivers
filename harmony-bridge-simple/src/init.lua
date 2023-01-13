@@ -129,9 +129,8 @@ end
 -- this is called when a device is removed by the cloud and synchronized down to the hub
 local function device_removed(driver, device)
   if (device:component_exists("testbutton")) then --this means that it is a harmony hub
-    local ws = device:get_field("ws")
-    driver:unregister_channel_handler(ws.sock)
-    ws:close(4001,'lost interest')
+    local listener = device:get_field("listener")
+    if listener then listener:stop() end
   end
   log.info("[" .. device.id .. "] Removing Harmony device")
 end
