@@ -129,18 +129,18 @@ function Listener:try_reconnect()
 
   function Listener:handle_msg_event(msg)
     local payload = msg
-    if (device.preferences.verboserecdlog == true) then
-      device:emit_event(logger.logger("Payload Recd: "..(payload or "")))
-      log.info("[" .. device.id .. "] Payload Recd: "..(payload or ""))
+    if (self.device.preferences.verboserecdlog == true) then
+      self.device:emit_event(logger.logger("Payload Recd: "..(payload or "")))
+      log.info("[" .. self.device.id .. "] Payload Recd: "..(payload or ""))
     end
     local response = json.decode(payload)
     --  print("Response: ",utils.stringify_table(response))
       if response.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?config" then
-        receiveConfig(device,response)
+        receiveConfig(self.device,response)
       end
     
       --activity broker hooks
-      hbactivity_message_broker.messageReceived(hello_world_driver,device,response)
+      hbactivity_message_broker.messageReceived(hello_world_driver,self.device,response)
   end
 
 
