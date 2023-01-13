@@ -224,6 +224,7 @@ function getConfig(device)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
+  local listener = device:get_field("listener")
   listener:send_msg(payload)
   if (device.preferences.verboserecdlog == true) then
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
