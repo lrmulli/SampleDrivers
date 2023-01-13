@@ -142,7 +142,7 @@ function Listener:try_reconnect()
       end
     
       --activity broker hooks
-      hbactivity_message_broker.messageReceived(hello_world_driver,self.device,response)
+      hbactivity_message_broker.messageReceived(self.driver,self.device,response)
   end
 
 
