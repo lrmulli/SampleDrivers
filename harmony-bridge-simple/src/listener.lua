@@ -8,7 +8,6 @@ local CloseCode = require"lustre.frame.close".CloseCode
 local capabilities = require "st.capabilities"
 local utils = require "st.utils"
 local harmony_utils = require "utils"
-local hbactivity_message_broker = require "hbactivity_message_broker"
 local MAX_RECONNECT_ATTEMPTS = 10
 local RECONNECT_PERIOD = 120 -- 2 min
 local logger = capabilities["universevoice35900.log"]
