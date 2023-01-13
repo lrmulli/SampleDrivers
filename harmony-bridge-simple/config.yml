@@ -1,5 +1,5 @@
-name: 'Harmony Bridge Simple'
-packageKey: 'org.mullineux.harmonybridgesimple.v1'
+name: 'Harmony Bridge Simple - Testers Only'
+packageKey: 'org.mullineux.harmonybridgesimple.v2'
 permissions:
   lan: {}
   discovery: {}
