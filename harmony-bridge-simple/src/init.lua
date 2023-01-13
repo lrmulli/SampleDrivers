@@ -172,7 +172,7 @@ function ws_connect(device)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   if ipAddress ~= "" and hubId ~= ""  then
-    local listener = Listener.create_device_event_listener(driver, device)
+    local listener = Listener.create_device_event_listener(hello_world_driver, device)
     device:set_field("listener", listener)
     listener:start()
   
