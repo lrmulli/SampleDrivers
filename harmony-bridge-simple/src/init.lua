@@ -83,11 +83,11 @@ local function device_info_changed(driver, device, event, args)
           type = "LAN",
           -- the DNI must be unique across your hub, using static ID here so that we
           -- only ever have a single instance of this "device"
-          device_network_id = "harmony_bridge_"..did,
-          label = "Harmony Bridge Simple - "..did,
+          device_network_id = "harmony_bridge_v2_"..did,
+          label = "Harmony Bridge Simple V2 - "..did,
           profile = "harmony-bridge-simple.v1",
           manufacturer = "SmartThingsCommunity",
-          model = "v1",
+          model = "v2",
           vendor_provided_label = nil
         }
         driver:try_create_device(metadata)
