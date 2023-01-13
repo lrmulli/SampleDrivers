@@ -5,7 +5,6 @@ local utils = require "st.utils"
 local log = require "log"
 local bit = require 'bitop.funcs'
 local socket = require'socket'
---local ws = require('websocket.client').sync({ timeout = 30 })
 local json = require "dkjson"
 --local http = require('socket.http')
 local cosock = require "cosock"
@@ -170,14 +169,9 @@ local params = {
 
 
 function ws_connect(device)
-  local ws = require('websocket.client').sync({ timeout = 30 })
-  device:set_field("ws",ws)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   if ipAddress ~= "" and hubId ~= ""  then
-    log.info("[" .. device.id .. "] Configured IP Address is : "..ipAddress)
-    local hub_url = "ws://"..ipAddress..":8088/?domain=svcs.myharmony.com&hubId="..hubId
-    log.debug("[" .. device.id .. "] WS_CONNECT - Connecting")
     local listener = Listener.create_device_event_listener(driver, device)
     device:set_field("listener", listener)
     listener:start()
@@ -188,35 +182,6 @@ function ws_connect(device)
   else
     log.info("[" .. device.id .. "] Check IP Address Configuration")
   end
-end
-function my_ws_tick(device)
-  local ws = device:get_field("ws")
-  print("In Tick Function "..device.id)
-  local payload, opcode, c, d, err = ws:receive()
-  --print("Payload: ",payload)
-  print("Opcode: ",opcode)
-  print("Error: ",err)
-  if (device.preferences.verboserecdlog == true) then
-    device:emit_event(logger.logger("Opcode: "..(opcode or "")))
-    device:emit_event(logger.logger("Error: "..(err or "")))
-    device:emit_event(logger.logger("Payload Recd: "..(payload or "")))
-    log.debug("[" .. device.id .. "] Payload Recd: "..(payload or ""))
-  end
-  if opcode == 9.0 then  -- PING 
-    print('SEND PONG:', ws:send(payload, 10)) -- Send PONG
-  end
-  if err then
-    ws_connect(device)   -- Reconnect on error
-  end
-  local response = json.decode(payload)
---  print("Response: ",utils.stringify_table(response))
-  if response.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?config" then
-    receiveConfig(device,response)
-  end
-
-  --activity broker hooks
-  hbactivity_message_broker.messageReceived(hello_world_driver,device,response)
-  --end activity broker hooks
 end
 
 function getConfig(device)
@@ -270,16 +235,8 @@ function sendHarmonyCommand(device,deviceId,command,action,time)
     }
   }]]
   print(payload)
-  local ok,close_was_clean,close_code,close_reason = ws:send(payload)
-  print(ok,close_was_clean,close_code,close_reason)
-  if close_reason then
-    log.debug("[" .. device.id .. "] Attempting to reconnect")
-    ws_connect(device)   -- Reconnect on error
-    ws = device:get_field("ws")
-    log.debug("[" .. device.id .. "] Re-trying message send")
-    local ok,close_was_clean,close_code,close_reason = ws:send(payload)
-    print(ok,close_was_clean,close_code,close_reason)
-  end
+  local listener = device:get_field("listener")
+  listener:send_msg(payload)
   if (device.preferences.verboserecdlog == true) then
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
   end
@@ -304,16 +261,8 @@ function sendHarmonyStartActivity(device,activityId,time)
     }
   }]]
   print(payload)
-  local ok,close_was_clean,close_code,close_reason = ws:send(payload)
-  print(ok,close_was_clean,close_code,close_reason)
-  if close_reason then
-    log.debug("[" .. device.id .. "] Attempting to reconnect")
-    ws_connect(device)   -- Reconnect on error
-    ws = device:get_field("ws")
-    log.debug("[" .. device.id .. "] Re-trying message send")
-    local ok,close_was_clean,close_code,close_reason = ws:send(payload)
-    print(ok,close_was_clean,close_code,close_reason)
-  end
+  local listener = device:get_field("listener")
+  listener:send_msg(payload)
   if (device.preferences.verboserecdlog == true) then
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
   end
@@ -333,16 +282,8 @@ function sendHarmonyGetCurrentActivity(device,time)
       }
     }]]
   print(payload)
-  local ok,close_was_clean,close_code,close_reason = ws:send(payload)
-  print(ok,close_was_clean,close_code,close_reason)
-  if close_reason then
-    log.debug("[" .. device.id .. "] Attempting to reconnect after closuer code: "..close_code)
-    ws_connect(device)   -- Reconnect on error
-    ws = device:get_field("ws")
-    log.debug("[" .. device.id .. "] Re-trying message send")
-    local ok,close_was_clean,close_code,close_reason = ws:send(payload)
-    print(ok,close_was_clean,close_code,close_reason)
-  end
+  local listener = device:get_field("listener")
+  listener:send_msg(payload)
   if (device.preferences.verboserecdlog == true) then
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
   end
