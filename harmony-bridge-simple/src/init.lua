@@ -11,7 +11,7 @@ local json = require "dkjson"
 local cosock = require "cosock"
 local http = cosock.asyncify "socket.http"
 ltn12 = require("ltn12")
-
+local Listener = require "listener"
 
 -- Custom capabilities
 local capdefs = require "capdefs"
@@ -178,19 +178,10 @@ function ws_connect(device)
     log.info("[" .. device.id .. "] Configured IP Address is : "..ipAddress)
     local hub_url = "ws://"..ipAddress..":8088/?domain=svcs.myharmony.com&hubId="..hubId
     log.debug("[" .. device.id .. "] WS_CONNECT - Connecting")
-    local r, code, _, sock = ws:connect(hub_url,"echo", params)
-    print('WS_CONNECT - STATUS', r, code)
+    local listener = Listener.create_device_event_listener(driver, device)
+    device:set_field("listener", listener)
+    listener:start()
   
-    device:set_field("ws",ws)
-    if r then
-      log.debug("[" .. device.id .. "] Registering Channel Handler")
-      log.debug()
-      hello_world_driver:register_channel_handler(ws.sock, function ()
-        my_ws_tick(device)
-      end,"SocketChannelHandler"..device.id)
-      log.debug("[" .. device.id .. "] Registering Channel Handler Code finished")
-      device:set_field("ws",ws)
-    end
     if (device.preferences.configonconnect == true) then
       getConfig(device)
     end
@@ -233,7 +224,7 @@ function getConfig(device)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   local payload = '{"hubId": "'..hubId..'","timeout": 60,"hbus": {"cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?config","id": "0","params": {"verb": "get"}}}'
-  print(ws:send(payload))
+  listener:send_msg(payload)
   if (device.preferences.verboserecdlog == true) then
     device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
   end
