@@ -24,7 +24,7 @@ end
 
 function Listener:try_reconnect()
     local retries = 0
-    local ip = self.device:get_field("ip")
+    local ip = self.device:get_field("harmony_hub_ip")
 
 
     if not ip then
