@@ -59,6 +59,7 @@ function Listener:try_reconnect()
     local url = "/"
     local sock, err = socket.tcp()
     local ip = self.device:get_field(("harmony_hub_ip"))
+    harmony_utils.getHarmonyHubId(self.device,ip)
     local hubId = self.device:get_field("harmony_hub_id")
     log.info(string.format("IP Address: %s", ip))
     log.info(string.format("Hub Id: %s", hubId))
