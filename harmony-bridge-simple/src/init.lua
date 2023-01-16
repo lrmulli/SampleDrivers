@@ -136,6 +136,17 @@ local function device_removed(driver, device)
   log.info("[" .. device.id .. "] Removing Harmony device")
 end
 
+local function do_refresh(driver, device, cmd)
+  log.info("[" .. device.id .. "] Do Refresh")
+  log.info(" [" .. device.id .. "] IP Address "..device.preferences.deviceaddr)
+  local ipAddress = device.preferences.deviceaddr
+  device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
+  log.info(" [" .. device.id .. "] stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
+  getHarmonyHubId(device,ipAddress)
+  log.info(" [" .. device.id .. "] stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
+  device.thread:call_with_delay(1, function() connect_ws_harmony(device) end)
+end
+
 
 
 
@@ -154,6 +165,9 @@ local hello_world_driver = Driver("harmony-bridge-simple.v1", {
     },
     [capabilities.momentary.ID] = {
       [capabilities.momentary.commands.push.NAME] = command_handlers.push,
+    },
+    [capabilities.refresh.ID] = {
+      [capabilities.refresh.commands.refresh.NAME] = do_refresh,
     },
   },
   sub_drivers = { require("hbactivity")}

@@ -15,6 +15,8 @@ components:
     version: 1
   - id: universevoice35900.log
     version: 1
+  - id: refresh
+    version: 1
   categories:
   - name: RemoteController
 metadata:
