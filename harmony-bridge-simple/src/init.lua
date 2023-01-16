@@ -38,6 +38,7 @@ end
 local function device_init(driver, device)
   log.info("[" .. device.id .. "] Initializing Harmony device")
   -- mark device as online so it can be controlled from the app
+  device:set_field("connection_status","disconnected")
   device:online()
   if (device:component_exists("testbutton")) then --this means that it is a harmony hub
     if (device.preferences.deviceaddr ~= "192.168.1.n") then

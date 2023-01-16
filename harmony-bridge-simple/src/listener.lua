@@ -25,7 +25,7 @@ end
 function Listener:try_reconnect()
     local retries = 0
     local ip = self.device:get_field("harmony_hub_ip")
-
+    self.device:set_field("connection_status","reconnecting")
 
     if not ip then
       log.warn(string.format("[%s](%s) Cannot reconnect because no device ip",
@@ -36,6 +36,7 @@ function Listener:try_reconnect()
                            harmony_utils.get_serial_number(self.device), self.device.label, ip))
     while retries < MAX_RECONNECT_ATTEMPTS do
       if self:start() then
+        self.device:set_field("connection_status","connected")
        -- self.driver:inject_capability_command(self.device,
        --                                       { capability = capabilities.refresh.ID,
        --                                         command = capabilities.refresh.commands.refresh.NAME,
@@ -49,10 +50,12 @@ function Listener:try_reconnect()
     end
     log.warn(string.format("[%s](%s) failed to reconnect websocket for device events",
                            harmony_utils.get_serial_number(self.device), self.device.label))
+    self.device:set_field("connection_status","disconnected")
   end
   
   --- @return success boolean
   function Listener:start()
+    self.device:set_field("connection_status","connecting")
     local url = "/"
     local sock, err = socket.tcp()
     local ip = self.device:get_field(("harmony_hub_ip"))
@@ -98,11 +101,13 @@ function Listener:try_reconnect()
     local success, err = websocket:connect(ip, Listener.WS_PORT)
     if err then
       log.error(string.format("failed to connect websocket: %s", err))
+      self.device:set_field("connection_status","disconnected")
       return false
     end
     self._stopped = false
     self.websocket = websocket
     self.device:online()
+    self.device:set_field("connection_status","connected")
     return true
   end
   
@@ -125,7 +130,13 @@ function Listener:try_reconnect()
   end
   
   function Listener:send_msg(text)
-    print("Message: "..text)
+    local connection_status = device:get_field("connection_status")
+    log.info(string.format("Pre message send connection status check %s", connection_status))
+    if connection_status == "disconnected" then
+      log.warn(string.format("[%s](%s) Pre message send connection status check disconnected - attempting reconnect", harmony_utils.get_serial_number(self.device),
+                             self.device.label))
+      self:try_reconnect()
+    end
     self.websocket:send_text(text)
   end
 
