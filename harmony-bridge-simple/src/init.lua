@@ -137,11 +137,11 @@ local function device_removed(driver, device)
 end
 
 local function do_refresh(driver, device, cmd)
-  refreshConnection(device)
+  refreshHarmonyConnection(device)
 end
 
-local function refreshConnection(device)
-  log.info("[" .. device.id .. "] Do Refresh")
+function refreshHarmonyConnection(device)
+  log.info("[" .. device.id .. "] Do Refresh Connection")
   log.info(" [" .. device.id .. "] IP Address "..device.preferences.deviceaddr)
   local ipAddress = device.preferences.deviceaddr
   device:set_field("harmony_hub_ip",device.preferences.deviceaddr)

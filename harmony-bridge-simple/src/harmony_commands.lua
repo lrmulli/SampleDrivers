@@ -37,7 +37,7 @@ end
 function harmony_commands.refreshConnection(device,req)
   log.info("[" .. device.id .. "] Refreshing Connection")
   if req.action == "refreshConnection" then
-    refreshConnection(device)
+    refreshHarmonyConnection(device)
   end
 end
 function harmony_commands.handleHarmonyCommand(device,commandString)
