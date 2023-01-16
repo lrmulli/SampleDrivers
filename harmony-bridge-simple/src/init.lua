@@ -141,6 +141,7 @@ local function do_refresh(driver, device, cmd)
 end
 
 function refreshHarmonyConnection(device)
+  device:emit_event(logger.logger("Refreshing the Harmony Connection"))
   log.info("[" .. device.id .. "] Do Refresh Connection")
   log.info(" [" .. device.id .. "] IP Address "..device.preferences.deviceaddr)
   local ipAddress = device.preferences.deviceaddr
