@@ -41,7 +41,7 @@ preferences:
     definition:
       minLength: 7
       stringType: paragraph
-      default: "{put your harmony command here}"
+      default: "put your test buttonharmony command here"
   - title: "Additional Harmony Identifier"
     name: deviceid
     description: "Identifier of the additional Hub you wish to add"
