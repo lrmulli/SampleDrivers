@@ -34,6 +34,12 @@ function harmony_commands.getCurrentActivity(device,req)
     sendHarmonyGetCurrentActivity(device,0)
   end
 end
+function harmony_commands.refreshConnection(device,req)
+  log.info("[" .. device.id .. "] Refreshing Connection")
+  if req.action == "refreshConnection" then
+    refreshConnection(device)
+  end
+end
 function harmony_commands.handleHarmonyCommand(device,commandString)
   log.debug("[" .. device.id .. "] Command String: "..commandString)
   local req = json.decode(commandString)
@@ -55,6 +61,9 @@ function harmony_commands.handleIndividualHarmonyCommand(device,req)
     harmony_commands.startActivity(device,req)
   elseif req.action == "getCurrentActivity" then
     harmony_commands.getCurrentActivity(device,req)
+  end
+  elseif req.action == "refreshConnection" then
+    harmony_commands.refreshConnection(device,req)
   end
 end
 

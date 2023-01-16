@@ -137,6 +137,10 @@ local function device_removed(driver, device)
 end
 
 local function do_refresh(driver, device, cmd)
+  refreshConnection(device)
+end
+
+local function refreshConnection(device)
   log.info("[" .. device.id .. "] Do Refresh")
   log.info(" [" .. device.id .. "] IP Address "..device.preferences.deviceaddr)
   local ipAddress = device.preferences.deviceaddr
@@ -146,7 +150,6 @@ local function do_refresh(driver, device, cmd)
   log.info(" [" .. device.id .. "] stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
   device.thread:call_with_delay(1, function() connect_ws_harmony(device) end)
 end
-
 
 
 
