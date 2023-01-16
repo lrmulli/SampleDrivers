@@ -32,7 +32,7 @@ function Listener:try_reconnect()
                              harmony_utils.get_serial_number(self.device), self.device.label))
       return
     end
-    log.info(string.format("[%s](%s) Attempting to reconnect websocket for speaker at %s",
+    log.info(string.format("[%s](%s) Attempting to reconnect websocket for harmony at %s",
                            harmony_utils.get_serial_number(self.device), self.device.label, ip))
     while retries < MAX_RECONNECT_ATTEMPTS do
       if self:start() then
