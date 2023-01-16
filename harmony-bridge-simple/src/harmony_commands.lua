@@ -61,7 +61,6 @@ function harmony_commands.handleIndividualHarmonyCommand(device,req)
     harmony_commands.startActivity(device,req)
   elseif req.action == "getCurrentActivity" then
     harmony_commands.getCurrentActivity(device,req)
-  end
   elseif req.action == "refreshConnection" then
     harmony_commands.refreshConnection(device,req)
   end
