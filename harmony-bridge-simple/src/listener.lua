@@ -130,7 +130,7 @@ function Listener:try_reconnect()
   end
   
   function Listener:send_msg(text)
-    local connection_status = device:get_field("connection_status")
+    local connection_status = self.device:get_field("connection_status")
     log.info(string.format("Pre message send connection status check %s", connection_status))
     if connection_status == "disconnected" then
       log.warn(string.format("[%s](%s) Pre message send connection status check disconnected - attempting reconnect", harmony_utils.get_serial_number(self.device),
