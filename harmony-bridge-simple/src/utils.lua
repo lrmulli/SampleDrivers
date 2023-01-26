@@ -42,7 +42,7 @@ utils.getHarmonyHubId = function(device,ipAddress)
     log.debug("[" .. device.id .. "] Response Body :"..respbody)
     print(result,respcode,respstatus)
     local resp = json.decode(respbody)
-    if isempty(resp) 
+    if utils.isempty(resp) 
     then
       log.debug("[" .. device.id .. "] Get Harmony Hub ID failed")
       return ""
