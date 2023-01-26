@@ -24,6 +24,7 @@ local command_handlers = require "command_handlers"
 local hbactivity_message_broker = require "hbactivity_message_broker"
 local discovery = require "discovery"
 local logger = capabilities["universevoice35900.log"]
+local harmony_utils = require "utils"
 
 -----------------------------------------------------------------
 -- local functions
@@ -44,7 +45,7 @@ local function device_init(driver, device)
     if (device.preferences.deviceaddr ~= "192.168.1.n") then
       local ipAddress = device.preferences.deviceaddr
       device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
-      getHarmonyHubId(device,ipAddress)
+      harmony_utils.getHarmonyHubId(device,ipAddress)
       --connect_ws_harmony(device)
       device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
     end
@@ -70,7 +71,7 @@ local function device_info_changed(driver, device, event, args)
       ipAddress = device.preferences.deviceaddr
       device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
       log.info(" [" .. device.id .. "] stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
-      getHarmonyHubId(device,ipAddress)
+      harmony_utils.getHarmonyHubId(device,ipAddress)
       log.info(" [" .. device.id .. "] stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
       --connect_ws_harmony(device)
       device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
@@ -147,7 +148,7 @@ function refreshHarmonyConnection(device)
   local ipAddress = device.preferences.deviceaddr
   device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
   log.info(" [" .. device.id .. "] stored_harmony_ip : "..device:get_field("harmony_hub_ip"))
-  getHarmonyHubId(device,ipAddress)
+  harmony_utils.getHarmonyHubId(device,ipAddress)
   log.info(" [" .. device.id .. "] stored_harmony_hub_id : "..device:get_field("harmony_hub_id"))
   device.thread:call_with_delay(1, function() connect_ws_harmony(device) end)
 end
@@ -308,35 +309,7 @@ function sendHarmonyGetCurrentActivity(device,time)
 end
 
 --End Harmony Websockets
---Harmony HTTP
-function getHarmonyHubId(device,ipAddress)
-  log.info("[" .. device.id .. "] Attempting to get hubID for ipAddress "..ipAddress)
-  local reqbody = [[{"id":124,"cmd":"setup.account?getProvisionInfo","timeout":90000}]]
-  local respbody = {} -- for the response body
-  http.TIMEOUT = 50;
-  log.info("[" .. device.id .. "] Sending request...")
 
-  local result, respcode, respheaders, respstatus = http.request {
-    method = "POST",
-    url = "http://"..ipAddress..":8088",
-    source = ltn12.source.string(reqbody),
-    headers = {
-        ["content-type"] = "application/json",
-        ["accept"] = "utf-8",
-        ["origin"] = "http://sl.dhg.myharmony.com",
-        ["content-length"] = string.len(reqbody)
-    },
-    sink = ltn12.sink.table(respbody)
-    }
-  -- get body as string by concatenating table filled by sink
-  respbody = table.concat(respbody)
-  log.debug("[" .. device.id .. "] Response Body :"..respbody)
-  print(result,respcode,respstatus)
-  local resp = json.decode(respbody)
-  print(resp.data.activeRemoteId)
-  device:set_field("harmony_hub_id",resp.data.activeRemoteId)
-end
---End Harmony HTTP
 function connect_ws_harmony(device)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")

@@ -42,9 +42,19 @@ utils.getHarmonyHubId = function(device,ipAddress)
     log.debug("[" .. device.id .. "] Response Body :"..respbody)
     print(result,respcode,respstatus)
     local resp = json.decode(respbody)
-    print(resp.data.activeRemoteId)
-    device:set_field("harmony_hub_id",resp.data.activeRemoteId)
-    return resp.data.activeRemoteId
+    if isempty(resp) 
+    then
+      log.debug("[" .. device.id .. "] Get Harmony Hub ID failed")
+      return ""
+    else
+      print(resp.data.activeRemoteId)
+      device:set_field("harmony_hub_id",resp.data.activeRemoteId)
+      return resp.data.activeRemoteId
+    end
+end
+
+utils.isempty = function(s)
+  return s == nil or s == ''
 end
 
 return utils
