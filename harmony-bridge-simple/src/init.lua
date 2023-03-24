@@ -45,6 +45,7 @@ local function device_init(driver, device)
   device:set_field("connection_status","disconnected")
   device:online()
   if (device:component_exists("testbutton")) then --this means that it is a harmony hub
+    device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Initialising"))
     if (device.preferences.deviceaddr ~= "192.168.1.n") then
       local ipAddress = device.preferences.deviceaddr
       device:set_field("harmony_hub_ip",device.preferences.deviceaddr)
@@ -52,7 +53,6 @@ local function device_init(driver, device)
       --connect_ws_harmony(device)
       device.thread:call_with_delay(5, function() connect_ws_harmony(device) end)
     end
-    device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Initialising"))
     device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Setting up current activity poll"))
     driver:call_on_schedule(60, function () poll(driver,device) end, 'POLLING - '..device.id)
   end
@@ -318,6 +318,7 @@ function connect_ws_harmony(device)
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
   log.info("[" .. device.id .. "] connecting over websockets ip: "..ipAddress.."HubId: "..hubId)
+  device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - connecting over websockets ip: "..ipAddress.."HubId: "..hubId"))
   hello_world_driver:call_with_delay(1, function ()
     ws_connect(device)
   end, 'WS START TIMER')
@@ -326,6 +327,16 @@ end
 function poll(driver,device)
   if device.preferences.deviceaddr ~= "192.168.1.n" then
     --we have an ip address
+    local connection_status = device:get_field("connection_status")
+    if connection_status == "disconnected" then
+      device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Disconnection detected at poll, attempting re-connect"))
+      connect_ws_harmony(device)
+    else
+      log.info("[" .. device.id .. "] Connected at poll - ",device.id)
+      if (device.preferences.verboserecdlog == true) then
+        device:emit_event(logger.logger("Connected at poll"))
+      end
+    end
     log.info("[" .. device.id .. "] Polling for activity updates - ",device.id)
     sendHarmonyGetCurrentActivity(device,0)
   end
