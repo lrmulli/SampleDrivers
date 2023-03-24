@@ -294,7 +294,7 @@ function sendHarmonyGetCurrentActivity(device,time)
   local ws = device:get_field("ws")
   local hubId = device:get_field("harmony_hub_id")
   local ipAddress = device:get_field("harmony_hub_ip")
-  if utils.isempty(hubId) then
+  if harmony_utils.isempty(hubId) then
     harmony_utils.getHarmonyHubId(device,ipAddress)
   else
     local payload = [[{

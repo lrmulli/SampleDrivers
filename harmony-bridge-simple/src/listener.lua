@@ -65,7 +65,7 @@ function Listener:try_reconnect()
     local hubId = self.device:get_field("harmony_hub_id")
     log.info(string.format("IP Address: %s", ip))
     log.info(string.format("Hub Id: %s", hubId))
-    if utils.isempty(hubId) then
+    if harmony_utils.isempty(hubId) then
       log.error("failed to get hubid for device")
       self.device:set_field("connection_status","disconnected")
       return false
