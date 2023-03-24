@@ -69,7 +69,7 @@ function Listener:try_reconnect()
       log.error("failed to get hubid for device")
       self.device:set_field("connection_status","disconnected")
       return false
-    else
+    end
     local hub_path = "/?domain=svcs.myharmony.com&hubId="..hubId
     log.info(string.format("Path: %s", hub_path))
     local serial_number = harmony_utils.get_serial_number(self.device)
