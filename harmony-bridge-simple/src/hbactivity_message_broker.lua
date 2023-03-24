@@ -27,7 +27,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
         if (d.parent_device_id == device.id and d:component_exists("activitylogger")) then
             --this means that the child device is owned by the device that received the message (and it is as activity device)
             if msg.type == "connect.stateDigest?notify" then
-                --d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
+                d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
                 if (msg.data.activityId == d.vendor_provided_label and msg.data.activityStatus==2) then
                     --this means this is a message about this activity for this device
                     log.info("Matching Activity & Device: ",msg.data.activityId)
