@@ -3,9 +3,7 @@ local capabilities = require "st.capabilities"
 local utils = require "st.utils"
 local json = require "dkjson"
 local logger = capabilities["universevoice35900.log"]
-local capdefs = require "capdefs"
-local lastStatusUpdate = capabilities.build_cap_from_json_string(capdefs.lastStatusUpdateJson)
-capabilities["universevoice35900.lastStatusUpdate"] = lastStatusUpdate
+local lastStatusUpdate = capabilities["universevoice35900.lastStatusUpdate"]
 
 local hbactivity_message_broker = {}
 
