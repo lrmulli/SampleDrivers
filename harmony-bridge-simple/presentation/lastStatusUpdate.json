@@ -42,7 +42,7 @@
                     "type": "inactive"
                   }
               ],
-              "value": "door.value",
+              "value": "LastStatusUpdate.value",
               "valueType": "string"
             }
           }
