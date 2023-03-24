@@ -27,17 +27,25 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
         if (d.parent_device_id == device.id and d:component_exists("activitylogger")) then
             --this means that the child device is owned by the device that received the message (and it is as activity device)
             if msg.type == "connect.stateDigest?notify" then
-                d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
-                if (msg.data.activityId == d.vendor_provided_label and msg.data.activityStatus==2) then
+                if(msg.data.activityId == d.vendor_provided_label) then
                     --this means this is a message about this activity for this device
+                    --log the message to history
+                    if (device.preferences.verboserecdlog == true) then
+                        d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
+                    end 
+                    log.info("Setting lastStatusUpdate - Status ",msg.data.activityStatus)
+                    if (msg.data.activityStatus==2) then
+                        d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.on())
+                    end
+                end
+                if (msg.data.activityId == d.vendor_provided_label and msg.data.activityStatus==2) then
+                    --this means this is a message about this activity for this device and the status is 2
                     log.info("Matching Activity & Device: ",msg.data.activityId)
                     log.info("Activity Status: ",msg.data.activityStatus)
                     
                     --make sure the switch is 'on'
                     log.info("Switching Activity On")
                     d:emit_event(capabilities.switch.switch.on())
-                    log.info("Setting lastStatusUpdate - Activity On")
-                    d:emit_event(lastStatusUpdate.LastStatusUpdate.on())
                 else
                     --make sure the switch is 'off'
                     log.info("Switching Activity Off")
