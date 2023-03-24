@@ -332,7 +332,7 @@ function poll(driver,device)
       device:emit_event(logger.logger("Connection Status at poll: "..connection_status))
       connect_ws_harmony(device)
     else
-      log.info("[" .. device.id .. "] Connected at poll - ",device.id)
+      log.info("[" .. device.id .. "] Connection Status at poll: ",connection_status)
       if (device.preferences.verboserecdlog == true) then
         device:emit_event(logger.logger("Connection Status at poll: "..connection_status))
       end
