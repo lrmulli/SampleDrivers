@@ -26,7 +26,7 @@ function Listener:try_reconnect()
     local retries = 0
     local ip = self.device:get_field("harmony_hub_ip")
     self.device:set_field("connection_status","reconnecting")
-
+    self.device:emit_event(logger.logger("Attempting Re-Connect"))
     if not ip then
       log.warn(string.format("[%s](%s) Cannot reconnect because no device ip",
                              harmony_utils.get_serial_number(self.device), self.device.label))
@@ -37,6 +37,7 @@ function Listener:try_reconnect()
     while retries < MAX_RECONNECT_ATTEMPTS do
       if self:start() then
         self.device:set_field("connection_status","connected")
+        self.device:emit_event(logger.logger("Re-Connected"))
        -- self.driver:inject_capability_command(self.device,
        --                                       { capability = capabilities.refresh.ID,
        --                                         command = capabilities.refresh.commands.refresh.NAME,
@@ -46,6 +47,7 @@ function Listener:try_reconnect()
       end
       retries = retries + 1
       log.info(string.format("Retry reconnect in %s seconds", RECONNECT_PERIOD))
+      self.device:emit_event(logger.logger("Retry reconnect in 120s seconds"))
       socket.sleep(RECONNECT_PERIOD)
     end
     log.warn(string.format("[%s](%s) failed to reconnect websocket for device events",
@@ -109,6 +111,7 @@ function Listener:try_reconnect()
     self.websocket = websocket
     self.device:online()
     self.device:set_field("connection_status","connected")
+    self.device:emit_event(logger.logger("Connected"))
     return true
   end
   
