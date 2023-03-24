@@ -293,22 +293,27 @@ end
 function sendHarmonyGetCurrentActivity(device,time)
   local ws = device:get_field("ws")
   local hubId = device:get_field("harmony_hub_id")
-  local payload = [[{
-    "hubId": "]]..hubId..[[",
-    "timeout": 60,
-    "hbus": {
-      "cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?getCurrentActivity",
-      "id": "0",
-      "params": {
-        "verb": "get"
+  local ipAddress = device:get_field("harmony_hub_ip")
+  if utils.isempty(hubId) then
+    harmony_utils.getHarmonyHubId(device,ipAddress)
+  else
+    local payload = [[{
+      "hubId": "]]..hubId..[[",
+      "timeout": 60,
+      "hbus": {
+        "cmd": "vnd.logitech.harmony/vnd.logitech.harmony.engine?getCurrentActivity",
+        "id": "0",
+        "params": {
+          "verb": "get"
+          }
         }
-      }
-    }]]
-  print(payload)
-  local listener = device:get_field("listener")
-  listener:send_msg(payload)
-  if (device.preferences.verboserecdlog == true) then
-    device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
+      }]]
+    print(payload)
+    local listener = device:get_field("listener")
+    listener:send_msg(payload)
+    if (device.preferences.verboserecdlog == true) then
+      device:emit_event(logger.logger("Payload Sent: "..(payload or "")))
+    end
   end
 end
 
