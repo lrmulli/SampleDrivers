@@ -65,11 +65,17 @@ function Listener:try_reconnect()
     local hubId = self.device:get_field("harmony_hub_id")
     log.info(string.format("IP Address: %s", ip))
     log.info(string.format("Hub Id: %s", hubId))
+    if utils.isempty(hubId) then
+      log.error("failed to get hubid for device")
+      self.device:set_field("connection_status","disconnected")
+      return false
+    else
     local hub_path = "/?domain=svcs.myharmony.com&hubId="..hubId
     log.info(string.format("Path: %s", hub_path))
     local serial_number = harmony_utils.get_serial_number(self.device)
     if not ip then
       log.error("failed to get ip address for device")
+      self.device:set_field("connection_status","disconnected")
       return false
     end
     log.info(string.format("[%s](%s) Starting websocket listening client on %s:%s",
