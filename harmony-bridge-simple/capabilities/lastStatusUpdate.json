@@ -1,0 +1,29 @@
+{
+  "status": "proposed",
+  "name": "Last Status Update",
+  "attributes": {
+      "LastStatusUpdate": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "enum": [
+                  "starting",
+                  "on",
+                  "stopping",
+                  "off"
+                ]
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                  "value"
+              ]
+          },
+          "setter": "LastStatusUpdate",
+          "enumCommands": []
+      }
+  },
+  "commands": {}
+}
