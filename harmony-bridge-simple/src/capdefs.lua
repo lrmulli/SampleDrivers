@@ -62,7 +62,36 @@ local harmonyCommandJson = [[{
     },
     "commands": {}
 }]]
+local lastStatusUpdateJson = [[{
+    "status": "proposed",
+    "name": "Last Status Update",
+    "attributes": {
+        "LastStatusUpdate": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "enum": [
+                    "starting",
+                    "on",
+                    "stopping",
+                    "off"
+                  ]
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "value"
+                ]
+            },
+            "enumCommands": []
+        }
+    },
+    "commands": {}
+  }]]
   return {
 	harmonyCommandJson = harmonyCommandJson,
-    devicelistJson = devicelistJson
+    devicelistJson = devicelistJson,
+    lastStatusUpdateJson = lastStatusUpdateJson
 }

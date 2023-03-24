@@ -6,6 +6,11 @@ components:
   capabilities:
   - id: switch
     version: 1
+- id: lastStatusUpdate
+  label: lastStatusUpdate
+  capabilities:
+  - id: universevoice35900.lastStatusUpdate
+    version: 1
 - id: activitylogger
   label: activitylogger
   capabilities:

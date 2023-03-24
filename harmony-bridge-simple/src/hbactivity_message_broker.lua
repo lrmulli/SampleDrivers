@@ -3,6 +3,9 @@ local capabilities = require "st.capabilities"
 local utils = require "st.utils"
 local json = require "dkjson"
 local logger = capabilities["universevoice35900.log"]
+local capdefs = require "capdefs"
+local lastStatusUpdate = capabilities.build_cap_from_json_string(capdefs.lastStatusUpdateJson)
+capabilities["universevoice35900.lastStatusUpdate"] = lastStatusUpdate
 
 local hbactivity_message_broker = {}
 
@@ -33,6 +36,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                     --make sure the switch is 'on'
                     log.info("Switching Activity On")
                     d:emit_event(capabilities.switch.switch.on())
+                    d:emit_event(lastStatusUpdate.LastStatusUpdate.on())
                 else
                     --make sure the switch is 'off'
                     log.info("Switching Activity Off")

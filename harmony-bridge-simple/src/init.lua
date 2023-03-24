@@ -19,6 +19,9 @@ capabilities["universevoice35900.harmonycommand3"] = harmonycommand
 
 local devicelist = capabilities.build_cap_from_json_string(capdefs.devicelistJson)
 capabilities["universevoice35900.devicelist"] = devicelist
+
+local lastStatusUpdate = capabilities.build_cap_from_json_string(capdefs.lastStatusUpdateJson)
+capabilities["universevoice35900.lastStatusUpdate"] = lastStatusUpdate
 -- require custom handlers from driver package
 local command_handlers = require "command_handlers"
 local hbactivity_message_broker = require "hbactivity_message_broker"
