@@ -34,9 +34,9 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                     log.info("Setting lastStatusUpdate - Status ",msg.data.activityStatus)
                     if (msg.data.activityStatus==1) then
                         d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.starting())
-                    else if(msg.data.activityStatus==2) then
+                    elseif(msg.data.activityStatus==2) then
                         d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.on())
-                    else if(msg.data.activityStatus==3) then
+                    elseif(msg.data.activityStatus==3) then
                         d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.stopping())
                     end
                 end
