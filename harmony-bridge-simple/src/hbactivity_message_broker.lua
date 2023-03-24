@@ -32,8 +32,12 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                         d:emit_component_event(d.profile.components.activitylogger,logger.logger("Activity Message Recd: "..(utils.stringify_table(msg,"Activity Message: ",true) or "")))
                     end 
                     log.info("Setting lastStatusUpdate - Status ",msg.data.activityStatus)
-                    if (msg.data.activityStatus==2) then
+                    if (msg.data.activityStatus==1) then
+                        d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.starting())
+                    else if(msg.data.activityStatus==2) then
                         d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.on())
+                    else if(msg.data.activityStatus==3) then
+                        d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.stopping())
                     end
                 end
                 if (msg.data.activityId == d.vendor_provided_label and msg.data.activityStatus==2) then
@@ -48,16 +52,19 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                     --make sure the switch is 'off'
                     log.info("Switching Activity Off")
                     d:emit_event(capabilities.switch.switch.off())
+                    d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.off())
                 end
             elseif msg.cmd == "vnd.logitech.harmony/vnd.logitech.harmony.engine?getCurrentActivity" then
                 if (msg.data.result == d.vendor_provided_label) then
                     log.info("Matching Activity & Device: ",msg.data.result)
                     log.info("Switching Activity On")
                     d:emit_event(capabilities.switch.switch.on())
+                    d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.on())
                 else
                     --make sure the switch is 'off'
                     log.info("Switching Activity Off")
                     d:emit_event(capabilities.switch.switch.off())
+                    d:emit_component_event(d.profile.components.lastStatusUpdate,lastStatusUpdate.LastStatusUpdate.off())
                 end
             end
         end
