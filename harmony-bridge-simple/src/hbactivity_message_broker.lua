@@ -36,6 +36,7 @@ function hbactivity_message_broker.activityMessageReceived(driver,device,msg)
                     --make sure the switch is 'on'
                     log.info("Switching Activity On")
                     d:emit_event(capabilities.switch.switch.on())
+                    log.info("Setting lastStatusUpdate - Activity On")
                     d:emit_event(lastStatusUpdate.LastStatusUpdate.on())
                 else
                     --make sure the switch is 'off'
