@@ -226,7 +226,7 @@ function receiveConfig(device,config)
       for x, action in pairs(cg["function"]) do
         --print(utils.stringify_table(action))
         local cmd = action.action.name
-        print cmd
+        print(cmd)
         deviceListString = deviceListString..[[{"deviceId":"]]..d.id..[[","command":"]]..action.name..[[","action":"press"}]]..string.char(10)..string.char(13)
       end
     end
