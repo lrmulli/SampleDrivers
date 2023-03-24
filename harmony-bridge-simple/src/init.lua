@@ -329,12 +329,12 @@ function poll(driver,device)
     --we have an ip address
     local connection_status = device:get_field("connection_status")
     if connection_status == "disconnected" then
-      device:emit_event(logger.logger("Bridge Device [" .. device.id .. "] - Disconnection detected at poll, attempting re-connect"))
+      device:emit_event(logger.logger("Connection Status at poll: "..connection_status))
       connect_ws_harmony(device)
     else
       log.info("[" .. device.id .. "] Connected at poll - ",device.id)
       if (device.preferences.verboserecdlog == true) then
-        device:emit_event(logger.logger("Connected at poll"))
+        device:emit_event(logger.logger("Connection Status at poll: "..connection_status))
       end
     end
     log.info("[" .. device.id .. "] Polling for activity updates - ",device.id)
