@@ -1,0 +1,54 @@
+{
+  "tag":"en",
+  "dashboard": {
+      "states": [],
+      "actions": [],
+      "basicPlus": []
+  },
+  "detailView": [
+      {
+          "label": "lastStatusUpdate",
+          "displayType": "state",
+          "state": {
+              "label": "{{LastStatusUpdate.value}}"
+          }
+      }
+  ],
+  "automation": {
+      "conditions": [
+        {
+            "label": "Last Status Update",
+            "displayType": "list",
+            "list": {
+              "alternatives": [
+                {
+                  "key": "starting",
+                  "value": "starting",
+                  "type": "inactive"
+                },
+                {
+                  "key": "on",
+                  "value": "on",
+                  "type": "active"
+                },
+                {
+                  "key": "stopping",
+                  "value": "stopping",
+                  "type": "active"
+                },
+                {
+                    "key": "off",
+                    "value": "off",
+                    "type": "inactive"
+                  }
+              ],
+              "value": "door.value",
+              "valueType": "string"
+            }
+          }
+      ],
+      "actions": []
+  },
+  "id": "universevoice35900.lastStatusUpdate",
+  "version": 1
+}
