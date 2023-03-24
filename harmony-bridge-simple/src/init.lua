@@ -225,7 +225,7 @@ function receiveConfig(device,config)
     for i,cg in pairs(d.controlGroup) do
       for x, action in pairs(cg["function"]) do
           --print(utils.stringify_table(action))
-          deviceListString = deviceListString..[[{"deviceId":"]]..d.id..[[","command":"]]..action.name..[[","action":"press"}]]..string.char(10)..string.char(13)
+          deviceListString = deviceListString..[[{"deviceId":"]]..d.id..[[","command":"]]..action.command..[[","action":"press"}]]..string.char(10)..string.char(13)
       end
     end
   end
