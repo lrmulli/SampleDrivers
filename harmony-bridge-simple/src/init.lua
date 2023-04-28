@@ -5,6 +5,7 @@ local utils = require "st.utils"
 local log = require "log"
 local bit = require 'bitop.funcs'
 local socket = require'socket'
+local sock = require "cosock.socket"
 local json = require "dkjson"
 --local http = require('socket.http')
 local cosock = require "cosock"
@@ -64,27 +65,48 @@ end
 local function addActivityDevices(driver,device)
   local activityList = device:get_field("activityList")
   local hubId = device:get_field("harmony_hub_id")
+  local device_list = driver:get_devices()
   for i, a in pairs(activityList) do
-    log.info("[" .. device.id .. "] Creating Activity Device for - ",a.label)
-    --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
-    local dni = "harmony_bridge_activity_"..a.id
-    if(a.id == "-1") then
-      --this is the poweroff activity
-      dni = "harmony_bridge_"..hubId.."_activity_"..a.id
+    local device_exists = false
+    -- check if the device exists
+    -- loop trhrough the devices comparing the activity id
+    for _, d in ipairs(device_list) do
+      if (a.id == d.vendor_provided_label) then
+        device_exists = true
+      end
     end
-    local metadata = {
-      type = "LAN",
-      -- the DNI must be unique across your hub, using static ID here so that we
-      -- only ever have a single instance of this "device"
-      device_network_id = dni,
-      label = "HB "..hubId.." Activity - "..a.label,
-      profile = "harmony-bridge-activity.v1",
-      manufacturer = "HBActivity",
-      model = "HBActivity",
-      vendor_provided_label = a.id,
-      parent_device_id = device.id
-    }
-    driver:try_create_device(metadata)
+
+    if(device_exists) then
+      log.info("[" .. device.id .. "] Skipping - Activity Device already exists for - ",a.label)
+      device:emit_event(logger.logger("Skipping - Activity Device already exists for - "..a.label))
+    else
+      --device does not exist
+      log.info("[" .. device.id .. "] Creating Activity Device for - ",a.label)
+      device:emit_event(logger.logger("Creating Activity Device for - "..a.label))
+      --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
+      local dni = "harmony_bridge_activity_"..a.id
+      if(a.id == "-1") then
+        --this is the poweroff activity
+        dni = "harmony_bridge_"..hubId.."_activity_"..a.id
+      end
+      local metadata = {
+        type = "LAN",
+        -- the DNI must be unique across your hub, using static ID here so that we
+        -- only ever have a single instance of this "device"
+        device_network_id = dni,
+        label = "HB "..hubId.." Activity - "..a.label,
+        profile = "harmony-bridge-activity.v1",
+        manufacturer = "HBActivity",
+        model = "HBActivity",
+        vendor_provided_label = a.id,
+        parent_device_id = device.id
+      }
+      driver:try_create_device(metadata)
+      -- rate limit ourself.
+      sock.sleep(0.1)
+      ::continue::
+    end 
+
   end
 end
 
