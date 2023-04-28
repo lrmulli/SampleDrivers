@@ -63,6 +63,7 @@ end
 
 local function addActivityDevices(driver,device)
   local activityList = device:get_field("activityList")
+  local hubId = device:get_field("harmony_hub_id")
   for i, a in pairs(activityList) do
     log.info("[" .. device.id .. "] Creating Activity Device for - ",a.label)
     --deviceListString = deviceListString..a.label..[[{"activityId":"]]..a.id..[[","action":"startActivity"}]]..string.char(10)..string.char(13)
@@ -126,7 +127,6 @@ local function device_info_changed(driver, device, event, args)
     end
     if args.old_st_store.preferences.activitydevices ~= device.preferences.activitydevices then
       log.info("[" .. device.id .. "] Activity Devices setting changed")
-      local hubId = device:get_field("harmony_hub_id")
       if (device.preferences.activitydevices == true) then
         addActivityDevices(driver,device)
       end
