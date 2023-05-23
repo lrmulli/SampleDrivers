@@ -71,7 +71,7 @@ local function addActivityDevices(driver,device)
     -- check if the device exists
     -- loop trhrough the devices comparing the activity id
     for _, d in ipairs(device_list) do
-      if (a.id == d.vendor_provided_label) then
+      if (a.id == d.vendor_provided_label and a.id ~= "-1") then
         device_exists = true
       end
     end
